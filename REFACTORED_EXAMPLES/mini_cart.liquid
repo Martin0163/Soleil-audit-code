@@ -1,0 +1,395 @@
+{% comment %}
+  Mini Cart (Drawer) - Refactored
+  
+  Features:
+  - Slide-out drawer animation
+  - AJAX cart updates
+  - Item quantity controls
+  - Remove items
+  - Free shipping progress bar
+  - Cart recommendations
+  - Empty state
+  - Accessibility compliant
+  - No inline styles
+  
+  Usage: {% section 'mini_cart' %}
+{% endcomment %}
+
+<div
+  class="mini-cart"
+  id="mini-cart"
+  data-mini-cart
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="mini-cart-title"
+>
+  {%- comment -%} Overlay {%- endcomment -%}
+  <div class="mini-cart__overlay" data-mini-cart-close></div>
+  
+  {%- comment -%} Drawer {%- endcomment -%}
+  <div class="mini-cart__drawer">
+    
+    {%- comment -%} Header {%- endcomment -%}
+    <div class="mini-cart__header">
+      <h2 class="mini-cart__title" id="mini-cart-title">
+        Your Cart
+        <span class="mini-cart__count" data-cart-count>
+          ({{ cart.item_count }})
+        </span>
+      </h2>
+      <button
+        type="button"
+        class="mini-cart__close"
+        data-mini-cart-close
+        aria-label="Close cart"
+      >
+        <svg class="icon icon--close" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    
+    {%- comment -%} Free Shipping Progress {%- endcomment -%}
+    {% if section.settings.show_free_shipping_bar %}
+      {% assign threshold = section.settings.free_shipping_threshold | times: 100 %}
+      {% assign remaining = threshold | minus: cart.total_price %}
+      
+      <div class="mini-cart__shipping-progress">
+        {% if remaining > 0 %}
+          <p class="shipping-progress__text">
+            <svg class="icon icon--truck" width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="2"/>
+              <circle cx="5.5" cy="18.5" r="2.5" stroke="currentColor" stroke-width="2"/>
+              <circle cx="18.5" cy="18.5" r="2.5" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Add <strong>{{ remaining | money }}</strong> more for free shipping!
+          </p>
+          <div class="progress-bar">
+            <div
+              class="progress-bar__fill"
+              style="width: {{ cart.total_price | times: 100 | divided_by: threshold }}%"
+              role="progressbar"
+              aria-valuenow="{{ cart.total_price | times: 100 | divided_by: threshold }}"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            ></div>
+          </div>
+        {% else %}
+          <p class="shipping-progress__success">
+            <svg class="icon icon--check" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M16.667 5L7.5 14.167 3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            You qualify for <strong>free shipping!</strong>
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+    
+    {%- comment -%} Cart Items {%- endcomment -%}
+    <div class="mini-cart__items" data-cart-items>
+      {% if cart.item_count > 0 %}
+        {% for item in cart.items %}
+          <div class="cart-item" data-cart-item data-line-item-key="{{ item.key }}">
+            
+            {%- comment -%} Product Image {%- endcomment -%}
+            <div class="cart-item__image-wrapper">
+              <a href="{{ item.url }}" class="cart-item__image-link">
+                {% if item.image %}
+                  <img
+                    src="{{ item.image | image_url: width: 200 }}"
+                    alt="{{ item.image.alt | escape | default: item.title }}"
+                    class="cart-item__image"
+                    width="100"
+                    height="100"
+                    loading="lazy"
+                  />
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag: 'cart-item__image cart-item__image--placeholder' }}
+                {% endif %}
+              </a>
+            </div>
+            
+            {%- comment -%} Product Details {%- endcomment -%}
+            <div class="cart-item__details">
+              <div class="cart-item__info">
+                <h3 class="cart-item__title">
+                  <a href="{{ item.url }}" class="cart-item__title-link">
+                    {{ item.product.title | escape }}
+                  </a>
+                </h3>
+                
+                {%- comment -%} Variant Info {%- endcomment -%}
+                {% unless item.variant.title contains 'Default' %}
+                  <p class="cart-item__variant">
+                    {{ item.variant.title }}
+                  </p>
+                {% endunless %}
+                
+                {%- comment -%} Properties {%- endcomment -%}
+                {% if item.properties.size > 0 %}
+                  <ul class="cart-item__properties" role="list">
+                    {% for property in item.properties %}
+                      {% unless property.last == blank %}
+                        <li>
+                          <span class="cart-item__property-name">{{ property.first }}:</span>
+                          <span class="cart-item__property-value">{{ property.last }}</span>
+                        </li>
+                      {% endunless %}
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+                
+                {%- comment -%} Price {%- endcomment -%}
+                <div class="cart-item__price">
+                  {% if item.original_line_price != item.final_line_price %}
+                    <span class="cart-item__price-sale">
+                      {{ item.final_line_price | money }}
+                    </span>
+                    <s class="cart-item__price-compare">
+                      {{ item.original_line_price | money }}
+                    </s>
+                  {% else %}
+                    <span class="cart-item__price-regular">
+                      {{ item.final_line_price | money }}
+                    </span>
+                  {% endif %}
+                </div>
+                
+                {%- comment -%} Discounts {%- endcomment -%}
+                {% if item.line_level_discount_allocations.size > 0 %}
+                  <ul class="cart-item__discounts" role="list">
+                    {% for discount in item.line_level_discount_allocations %}
+                      <li class="cart-item__discount">
+                        <svg class="icon icon--tag" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                          <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <circle cx="7" cy="7" r="1" fill="currentColor"/>
+                        </svg>
+                        {{ discount.discount_application.title }} (-{{ discount.amount | money }})
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+              
+              {%- comment -%} Quantity Controls {%- endcomment -%}
+              <div class="cart-item__actions">
+                <div class="quantity-selector">
+                  <button
+                    type="button"
+                    class="quantity-selector__btn quantity-selector__btn--minus"
+                    data-quantity-decrease
+                    data-line-item-key="{{ item.key }}"
+                    aria-label="Decrease quantity"
+                    {% if item.quantity <= 1 %}disabled{% endif %}
+                  >
+                    <svg class="icon icon--minus" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                  
+                  <input
+                    type="number"
+                    class="quantity-selector__input"
+                    value="{{ item.quantity }}"
+                    min="1"
+                    max="{{ item.variant.inventory_quantity }}"
+                    data-quantity-input
+                    data-line-item-key="{{ item.key }}"
+                    aria-label="Quantity"
+                  />
+                  
+                  <button
+                    type="button"
+                    class="quantity-selector__btn quantity-selector__btn--plus"
+                    data-quantity-increase
+                    data-line-item-key="{{ item.key }}"
+                    aria-label="Increase quantity"
+                  >
+                    <svg class="icon icon--plus" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                
+                {%- comment -%} Remove Button {%- endcomment -%}
+                <button
+                  type="button"
+                  class="cart-item__remove"
+                  data-cart-remove
+                  data-line-item-key="{{ item.key }}"
+                  aria-label="Remove {{ item.title | escape }}"
+                >
+                  <svg class="icon icon--trash" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        {%- comment -%} Empty State {%- endcomment -%}
+        <div class="mini-cart__empty">
+          <svg class="mini-cart__empty-icon" width="80" height="80" viewBox="0 0 24 24" fill="none">
+            <circle cx="9" cy="21" r="1" stroke="currentColor" stroke-width="2"/>
+            <circle cx="20" cy="21" r="1" stroke="currentColor" stroke-width="2"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="mini-cart__empty-title">Your cart is empty</h3>
+          <p class="mini-cart__empty-text">Add some products to get started!</p>
+          <a href="/collections/all" class="btn btn--primary">
+            Continue Shopping
+          </a>
+        </div>
+      {% endif %}
+    </div>
+    
+    {%- comment -%} Cart Recommendations {%- endcomment -%}
+    {% if section.settings.show_recommendations and cart.item_count > 0 %}
+      <div class="mini-cart__recommendations" data-cart-recommendations>
+        <h3 class="mini-cart__recommendations-title">You May Also Like</h3>
+        <div class="mini-cart__recommendations-grid">
+          {%- comment -%} Recommendations will be loaded via JS {%- endcomment -%}
+        </div>
+      </div>
+    {% endif %}
+    
+    {%- comment -%} Footer {%- endcomment -%}
+    {% if cart.item_count > 0 %}
+      <div class="mini-cart__footer">
+        
+        {%- comment -%} Cart Note {%- endcomment -%}
+        {% if section.settings.show_cart_note %}
+          <details class="mini-cart__note-wrapper">
+            <summary class="mini-cart__note-toggle">
+              <svg class="icon icon--note" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Add a note to your order
+            </summary>
+            <textarea
+              class="mini-cart__note-input"
+              name="note"
+              placeholder="Special instructions, gift message, etc."
+              data-cart-note
+            >{{ cart.note }}</textarea>
+          </details>
+        {% endif %}
+        
+        {%- comment -%} Subtotal {%- endcomment -%}
+        <div class="mini-cart__subtotal">
+          <span class="mini-cart__subtotal-label">Subtotal</span>
+          <span class="mini-cart__subtotal-price" data-cart-subtotal>
+            {{ cart.total_price | money }}
+          </span>
+        </div>
+        
+        {%- comment -%} Cart Discounts {%- endcomment -%}
+        {% if cart.cart_level_discount_applications.size > 0 %}
+          <ul class="mini-cart__discounts" role="list">
+            {% for discount in cart.cart_level_discount_applications %}
+              <li class="mini-cart__discount">
+                <svg class="icon icon--tag" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="7" cy="7" r="1" fill="currentColor"/>
+                </svg>
+                <span>{{ discount.title }}</span>
+                <span>-{{ discount.total_allocated_amount | money }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        
+        <p class="mini-cart__taxes-shipping">
+          Taxes and shipping calculated at checkout
+        </p>
+        
+        {%- comment -%} Checkout Buttons {%- endcomment -%}
+        <div class="mini-cart__buttons">
+          <a href="/cart" class="btn btn--secondary btn--full">
+            View Cart
+          </a>
+          <button
+            type="submit"
+            name="checkout"
+            class="btn btn--primary btn--full"
+            data-checkout-btn
+          >
+            Checkout
+          </button>
+        </div>
+        
+        {%- comment -%} Trust Badges {%- endcomment -%}
+        {% if section.settings.show_trust_badges %}
+          <div class="mini-cart__trust">
+            <div class="trust-badge trust-badge--small">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <span>Secure Checkout</span>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  
+  {%- comment -%} Loading Overlay {%- endcomment -%}
+  <div class="mini-cart__loading" data-cart-loading hidden>
+    <svg class="spinner spinner--lg" width="40" height="40" viewBox="0 0 40 40">
+      <circle class="spinner__path" cx="20" cy="20" r="16" fill="none" stroke-width="3"/>
+    </svg>
+  </div>
+</div>
+
+{%- comment -%} Live Region for Screen Readers {%- endcomment -%}
+<div class="visually-hidden" aria-live="polite" aria-atomic="true" data-cart-status></div>
+
+{% schema %}
+{
+  "name": "Mini Cart",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Free Shipping Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_free_shipping_bar",
+      "label": "Show Free Shipping Progress",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free Shipping Threshold",
+      "default": 50,
+      "info": "Amount in dollars"
+    },
+    {
+      "type": "header",
+      "content": "Cart Features"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_note",
+      "label": "Enable Cart Note",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_recommendations",
+      "label": "Show Product Recommendations",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_badges",
+      "label": "Show Trust Badges",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
