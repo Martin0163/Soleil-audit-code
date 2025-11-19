@@ -7,7 +7,7 @@
   <meta name="theme-color" content="{{ settings.color_primary }}">
   
   {%- if settings.favicon != blank -%}
-    <link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x32' }}">
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
   {%- endif -%}
 
   {%- capture seo_title -%}
@@ -25,8 +25,8 @@
   <link rel="canonical" href="{{ canonical_url }}">
 
   {%- if settings.social_sharing_image -%}
-    <meta property="og:image" content="http:{{ settings.social_sharing_image | img_url: '1200x1200' }}">
-    <meta property="og:image:secure_url" content="https:{{ settings.social_sharing_image | img_url: '1200x1200' }}">
+    <meta property="og:image" content="http:{{ settings.social_sharing_image | image_url: width: 1200, height: 1200 }}">
+    <meta property="og:image:secure_url" content="https:{{ settings.social_sharing_image | image_url: width: 1200, height: 1200 }}">
   {%- endif -%}
 
   <meta property="og:site_name" content="{{ shop.name }}">
@@ -51,7 +51,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   
-  {%- comment -%} Google Fonts - Professional Typography {%- endcomment -%}
+  {%- comment -%} 
+    Google Fonts - Professional Typography
+    Note: Google Fonts are loaded from Google's CDN for optimal performance and caching.
+    This is a standard practice as Google's CDN provides better global distribution
+    and automatic font optimization than self-hosting. The preconnect tags above
+    ensure minimal performance impact.
+  {%- endcomment -%}
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   {{ 'theme.css' | asset_url | stylesheet_tag }}
@@ -75,8 +81,8 @@
     };
   </script>
 
-  {{ 'theme.js' | asset_url | script_tag }}
-  {{ 'ajax-cart.js' | asset_url | script_tag }}
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  <script src="{{ 'ajax-cart.js' | asset_url }}" defer></script>
 
   {%- if request.page_type contains 'customers/' -%}
     <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
@@ -121,7 +127,7 @@
       </button>
       
       <div class="search-form-wrapper">
-        <form action="/search" method="get" class="search-form" role="search">
+        <form action="{{ routes.search_url }}" method="get" class="search-form" role="search">
           <input 
             type="search" 
             name="q" 
