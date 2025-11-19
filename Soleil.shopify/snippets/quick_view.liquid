@@ -1,0 +1,55 @@
+{% comment %}
+Quick View Snippet
+- Modal popup for displaying product info without leaving the page.
+- Requires JS for AJAX loading, open/close, and accessibility (e.g., focus trapping).
+- Future improvements: Add keyboard navigation, animations, or variant selection inside modal.
+{% endcomment %}
+
+<div id="quick-view-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="quick-view-title" class="quick-view-modal" style="display:none;">
+  <div class="quick-view-content" role="document">
+    <button aria-label="Close quick view" id="quick-view-close" class="quick-view-close">×</button>
+    <div id="quick-view-product-details">
+      <!-- Product info loaded by JS -->
+    </div>
+  </div>
+</div>
+
+<style>
+  .quick-view-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 1rem;
+  }
+  .quick-view-content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  .quick-view-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .quick-view-content {
+      padding: 1rem;
+      max-width: 95%;
+    }
+  }
+  /* Future: Add focus styles or backdrop blur */
+</style>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- SEO Meta Tags - Update in Shopify Admin for dynamic content -->
+  <meta name="description" content="{{ page_description | default: shop.description | strip_html | truncate: 160 }}" />
+  <meta name="keywords" content="beauty, skincare, makeup, Soleil Beauty Shop" />
+  <meta name="author" content="{{ shop.name }}" />
+  
+  <!-- Open Graph for Social Sharing - Customize per page if needed -->
+  <meta property="og:title" content="{% if page_title %}{{ page_title }} - {% endif %}{{ shop.name }}" />
+  <meta property="og:description" content="{{ page_description | default: shop.description | strip_html | truncate: 160 }}" />
+  <meta property="og:image" content="{{ shop.logo | image_url: width: 1200, height: 630 }}" />
+  <meta property="og:url" content="{{ canonical_url }}" />
+  <meta property="og:type" content="website" />
+  
+  <!-- Favicon - Upload in Shopify Admin > Content > Files -->
+  <link rel="icon" type="image/png" href="{{ 'favicon.png' | asset_url }}" />
+  
+  <title>{% if page_title %}{{ page_title }} - {% endif %}{{ shop.name }}</title>
+
+  <!-- Google Fonts - League Spartan with preload for faster loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
+
+  <!-- Link your Shopify-hosted CSS asset here for best performance and CDN serving -->
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+  <!-- Shopify head content, required for apps and other scripts -->
+  {{ content_for_header }}
+
+  <!-- PayPal SDK loaded with defer to avoid parser blocking - Replace YOUR_PAYPAL_CLIENT_ID with actual ID or remove if not used -->
+  <script defer src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+
+  <!-- 
+    INSTRUCTIONS FOR FUTURE UPDATES:
+    - Avoid blocking page rendering by adding 'defer' or 'async' to all external scripts.
+    - Always use Shopify CDN assets (like theme.css and theme.js) via {{ 'file' | asset_url }} for performance.
+    - Do NOT load local CSS or JS inline; place all in assets folder and link here.
+    - Update meta tags in Shopify Admin for dynamic SEO (e.g., page descriptions).
+    - Add more meta tags (e.g., Twitter Cards) if expanding social sharing.
+    - Test font loading and preload for performance in tools like Google PageSpeed.
+  -->
+  
+</head>
+<body class="page-fade">
+
+  <!-- Main page content rendered here -->
+  {{ content_for_layout }}
+
+  <!-- Link your Shopify-hosted JS asset with 'defer' using inline script tag -->
+  <script defer src="{{ 'theme.js' | asset_url }}"></script>
+
+  <!-- Page fade-in/out transition moved to theme.js for better performance -->
+
+</body>
+</html>

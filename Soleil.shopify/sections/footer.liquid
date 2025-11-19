@@ -1,0 +1,86 @@
+{% comment %}
+Footer Section
+- Displays quick links, personal care menu, contact info, and social icons.
+- Customizable via schema settings for menus and contact details.
+- Future improvements: Add newsletter signup, payment icons, or multi-column layout.
+{% endcomment %}
+
+<footer role="contentinfo" aria-label="Site footer">
+  <div class="footer-content" style="max-width:1200px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+    <!-- Quick Links Menu -->
+    <div class="footer-section">
+      <h3>{{ section.settings.quick_links_title }}</h3>
+      <ul role="list">
+        {% for link in linklists[section.settings.quick_links].links %}
+          <li><a href="{{ link.url }}" aria-label="{{ link.title }}">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Personal Care Menu -->
+    <div class="footer-section">
+      <h3>{{ section.settings.personal_care_title }}</h3>
+      <ul role="list">
+        {% for link in linklists[section.settings.personal_care].links %}
+          <li><a href="{{ link.url }}" aria-label="{{ link.title }}">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="contact-info" style="margin-top: 2rem; border-top: 1px solid #555; padding-top: 2rem;">
+      <h3>{{ section.settings.contact_title }}</h3>
+      <p>Email: <a href="mailto:{{ section.settings.contact_email }}">{{ section.settings.contact_email }}</a> | Tel: <a href="tel:{{ section.settings.contact_phone }}">{{ section.settings.contact_phone }}</a></p>
+      <div class="social-icons" style="margin-top: 1rem; display: flex; gap: 1rem;">
+        {% if section.settings.social_facebook != blank %}
+          <a href="{{ section.settings.social_facebook }}" aria-label="Facebook" class="social-icon">📘</a>
+        {% endif %}
+        {% if section.settings.social_instagram != blank %}
+          <a href="{{ section.settings.social_instagram }}" aria-label="Instagram" class="social-icon">📷</a>
+        {% endif %}
+        {% if section.settings.social_twitter != blank %}
+          <a href="{{ section.settings.social_twitter }}" aria-label="Twitter" class="social-icon">🐦</a>
+        {% endif %}
+      </div>
+      <p>© {{ 'now' | date: '%Y' }} {{ shop.name }}. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .footer-content {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .footer-section h3 {
+      font-size: 1.2rem;
+    }
+  }
+  /* Social icon hover effects */
+  .social-icon:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+  }
+  /* Future: Add styles for newsletter form or payment badges */
+</style>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "quick_links_title", "label": "Quick Links Title", "default": "Enlaces Rápidos" },
+    { "type": "link_list", "id": "quick_links", "label": "Main Quick Links Menu" },
+    { "type": "text", "id": "personal_care_title", "label": "Personal Care Title", "default": "Cuidado Personal" },
+    { "type": "link_list", "id": "personal_care", "label": "Personal Care Menu" },
+    { "type": "text", "id": "contact_title", "label": "Contact Title", "default": "Contacto" },
+    { "type": "text", "id": "contact_email", "label": "Email", "default": "soleilcortes24@gmail.com" },
+    { "type": "text", "id": "contact_phone", "label": "Phone", "default": "+52 981-112-9898" },
+    { "type": "url", "id": "social_facebook", "label": "Facebook URL" },
+    { "type": "url", "id": "social_instagram", "label": "Instagram URL" },
+    { "type": "url", "id": "social_twitter", "label": "Twitter URL" }
+  ],
+  "presets": [{ "name": "Footer" }]
+}
+{% endschema %}

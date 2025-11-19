@@ -1,0 +1,32 @@
+{% comment %}
+Brand Link Snippet
+- Renders a link to a vendor collection with customizable styles.
+- Future improvements: Add brand logos, tooltips, or dynamic icons.
+{% endcomment %}
+
+<a href="/collections/vendors?q={{ vendor | url_encode }}" 
+   class="brand-button" 
+   aria-label="Ver productos de {{ vendor }}">
+  {{ vendor }}
+</a>
+
+<style>
+  .brand-button {
+    display: block;
+    background: var(--white);
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    border: 2px solid var(--yellow);
+    color: var(--black);
+    text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  .brand-button:hover {
+    background-color: var(--yellow);
+    color: var(--black);
+    transform: scale(1.05);
+  }
+  /* Future: Add responsive sizing or brand-specific colors */
+</style>

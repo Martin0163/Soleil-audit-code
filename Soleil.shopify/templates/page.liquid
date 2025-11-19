@@ -1,0 +1,36 @@
+{% comment %}
+Generic Page Template
+- Displays page content with header and footer.
+- Used for standard pages like contact or terms.
+- Future improvements: Add breadcrumbs, sidebars, or custom layouts.
+{% endcomment %}
+
+{% section 'header' %}
+
+<main role="main" aria-labelledby="page-title">
+  <h1 id="page-title" class="visually-hidden">{{ page.title }}</h1>
+  {{ content_for_layout }}
+</main>
+
+{% section 'footer' %}
+
+<style>
+  /* Responsive design */
+  @media (max-width: 768px) {
+    main {
+      padding: 1rem;
+    }
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  /* Future: Add page-specific styles or backgrounds */
+</style>

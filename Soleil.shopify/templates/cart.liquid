@@ -1,0 +1,63 @@
+{% comment %}
+Cart Template
+- Displays cart items in a table with quantity updates and totals.
+- Includes checkout link and empty cart message.
+- Future improvements: Add AJAX updates, remove buttons, or cart persistence.
+{% endcomment %}
+
+{% section 'header' %}
+
+<main style="margin-top:70px; max-width: 900px; margin-left:auto; margin-right:auto; padding: 2rem;" role="main" aria-labelledby="cart-title">
+  <h1 id="cart-title">Carrito de Compra</h1>
+
+  {% if cart.item_count > 0 %}
+    <table role="table" class="cart-table" aria-label="Items in cart">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart.items %}
+        <tr>
+          <td><a href="{{ item.product.url }}" aria-label="Ver {{ item.product.title }}">{{ item.product.title }}</a></td>
+          <td>
+            <form method="post" action="/cart/change" aria-label="Update quantity for {{ item.product.title }}">
+              <input type="hidden" name="id" value="{{ item.key }}">
+              <input type="number" name="quantity" min="0" value="{{ item.quantity }}" aria-label="Quantity" />
+              <button type="submit">Actualizar</button>
+            </form>
+          </td>
+          <td>{{ item.price | money }}</td>
+          <td>{{ item.line_price | money }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p><strong>Total: </strong>{{ cart.total_price | money }}</p>
+    <a href="/checkout" class="button" aria-label="Proceed to checkout">Ir a Pagar</a>
+
+  {% else %}
+    <p>Tu carrito está vacío.</p>
+    <a href="/collections/all" aria-label="Continue shopping">Continúa comprando</a>
+  {% endif %}
+</main>
+
+{% section 'footer' %}
+
+<style>
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .cart-table {
+      font-size: 0.9rem;
+    }
+    .cart-table th, .cart-table td {
+      padding: 0.5rem;
+    }
+  }
+  /* Future: Add loading states or animations */
+</style>

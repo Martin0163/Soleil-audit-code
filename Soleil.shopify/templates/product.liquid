@@ -1,0 +1,35 @@
+{% comment %}
+Product Page Template
+- Displays product content with header and footer.
+- Future improvements: Add related products, reviews, or custom layouts.
+{% endcomment %}
+
+{% section 'header' %}
+
+<main role="main" aria-labelledby="product-title">
+  <h1 id="product-title" class="visually-hidden">{{ product.title }}</h1>
+  {{ content_for_layout }}
+</main>
+
+{% section 'footer' %}
+
+<style>
+  /* Responsive design */
+  @media (max-width: 768px) {
+    main {
+      padding: 1rem;
+    }
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  /* Future: Add product-specific styles or galleries */
+</style>

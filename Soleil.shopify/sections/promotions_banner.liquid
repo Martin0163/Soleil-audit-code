@@ -1,0 +1,60 @@
+{% comment %}
+Promotion Banner Section
+- Displays a promotional message with optional link and button.
+- Customizable text, link, and button.
+- Future: Add dismissible functionality, animations, or multiple banners.
+{% endcomment %}
+
+<section class="promotion-banner" style="background-color: var(--yellow); color: var(--black); padding: 1rem; text-align: center;" aria-labelledby="promo-title">
+  <h2 id="promo-title">{{ section.settings.promo_text }}</h2>
+  {% if section.settings.promo_link != blank %}
+    <a href="{{ section.settings.promo_link }}" class="cta-button" style="margin-top: 0.5rem; display: inline-block;" aria-label="{{ section.settings.promo_button_text }}">
+      {{ section.settings.promo_button_text | default: 'Ver Oferta' }}
+    </a>
+  {% endif %}
+</section>
+
+<style>
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .promotion-banner {
+      padding: 0.5rem;
+    }
+    .promotion-banner h2 {
+      font-size: 1.5rem;
+    }
+  }
+  /* Hover effects */
+  .cta-button:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+  /* Future: Add close button or gradient backgrounds */
+</style>
+
+{% schema %}
+{
+  "name": "Promotion Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "promo_text",
+      "label": "Promotional Text",
+      "default": "¡Envío gratis en compras mayores a $1000!"
+    },
+    {
+      "type": "url",
+      "id": "promo_link",
+      "label": "Promotion Link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "text",
+      "id": "promo_button_text",
+      "label": "Button Text",
+      "default": "Ver Oferta"
+    }
+  ],
+  "presets": [{ "name": "Promotion Banner" }]
+}
+{% endschema %}

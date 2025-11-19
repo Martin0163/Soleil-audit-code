@@ -1,0 +1,98 @@
+{% comment %}
+Header Section
+- Displays responsive navigation with logo, menu, desktop buttons.
+- Includes mobile hamburger menu toggle.
+- Highlights current page button by not displaying it.
+- Accessible with ARIA roles and labels.
+- Improve this code by adding keyboard navigation and responsive tweaks.
+{% endcomment %}
+
+<header role="banner">
+  <nav role="navigation" aria-label="Main navigation" class="main-nav">
+    <!-- Logo -->
+    <div class="logo">
+      <a href="{{ shop.url }}" aria-label="Go to homepage">
+        <img src="https://cdn.shopify.com/s/files/1/0699/1278/9143/files/800X300_logo_1.png?v=1762996383" 
+             alt="{{ shop.name }}" 
+             width="150" height="80" 
+             style="max-width: 300px; height: auto;" 
+             loading="lazy" />
+      </a>
+    </div>
+
+    <!-- Mobile hamburger menu toggle button -->
+    <button aria-expanded="false" aria-controls="primary-menu" class="hamburger"
+            id="menu-toggle" aria-label="Toggle navigation menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Main navigation menu -->
+    <ul id="primary-menu" class="nav-links" role="menubar">
+      {% assign main_menu = linklists[section.settings.main_menu] %}
+      {% if main_menu %}
+        {% for link in main_menu.links %}
+          <li role="none" class="menu-item">
+            <a href="{{ link.url }}" role="menuitem" tabindex="-1">{{ link.title }}</a>
+            {% if link.links != empty %}
+              <ul class="dropdown" role="menu" aria-label="{{ link.title }} submenu">
+                {% for sublink in link.links %}
+                  <li role="none"><a href="{{ sublink.url }}" role="menuitem" tabindex="-1">{{ sublink.title }}</a></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </li>
+        {% endfor %}
+      {% else %}
+        <li><a href="{{ shop.url }}">Inicio</a></li>
+      {% endif %}
+    </ul>
+
+    <!-- Desktop buttons excluding current page -->
+    {% assign current_path = request.path | remove: '/' %}
+    {% assign products_path = routes.all_products_collection_url | remove: '/' %}
+
+    <div class="desktop-menu-buttons">
+      {% unless current_path == "" %}
+        <a href="{{ routes.root_url }}" class="desktop-menu-btn">Home</a>
+      {% endunless %}
+      {% unless current_path == products_path %}
+        <a href="{{ routes.all_products_collection_url }}" class="desktop-menu-btn">Products</a>
+      {% endunless %}
+      {% unless current_path == "collections/brands" %}
+        <a href="/collections/brands" class="desktop-menu-btn">Brands</a>
+      {% endunless %}
+      {% unless current_path == "pages/about-us" %}
+        <a href="/pages/about-us" class="desktop-menu-btn">About Us</a>
+      {% endunless %}
+    </div>
+
+    <!-- Search and cart icons -->
+    <div class="nav-icons">
+      <a href="{{ routes.search_url }}" class="search-icon" aria-label="Search">🔍</a>
+      <a href="{{ routes.cart_url }}" class="cart-icon" aria-label="Shopping cart">
+        🛒<span class="cart-count">{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Move this JS to your theme.js file -->
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      const menu = document.getElementById('primary-menu');
+      const expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', (!expanded).toString());
+      menu.classList.toggle('active');
+    });
+  </script>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo Image" },
+    { "type": "link_list", "id": "main_menu", "label": "Main Navigation Menu" }
+  ],
+  "presets": [{ "name": "Header" }]
+}
+{% endschema %}

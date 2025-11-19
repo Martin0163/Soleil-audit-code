@@ -1,0 +1,70 @@
+{% comment %}
+New Arrivals Section
+- Carousel displaying images for new products.
+- Customizable title and image blocks.
+- Future improvements: Add autoplay toggle, indicators, or swipe gestures.
+{% endcomment %}
+
+<section class="new-arrivals" aria-labelledby="new-arrivals-title">
+  <h2 id="new-arrivals-title">{{ section.settings.title }}</h2>
+  <div class="carousel" style="max-width: 800px; margin: 0 auto; overflow: hidden; border-radius: 15px; position: relative;" role="region" aria-label="New arrivals carousel">
+    <div class="carousel-inner" id="carouselInner" style="display: flex; transition: transform 0.5s ease;">
+      {% for block in section.blocks %}
+        <div class="carousel-item" style="min-width: 100%;">
+          <img 
+            src="{{ block.settings.image | image_url: width: 800, height: 300, crop: 'center' }}" 
+            width="800" height="300" 
+            alt="{{ block.settings.alt_text }}" 
+            loading="lazy" 
+            style="width: 100%; height: 300px; object-fit: cover;"
+          />
+        </div>
+      {% endfor %}
+    </div>
+
+    <button class="carousel-btn prev" aria-label="Previous slide" onclick="prevSlide()" 
+            style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); 
+                   background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px; 
+                   cursor: pointer; border-radius: 50%;">❮</button>
+    <button class="carousel-btn next" aria-label="Next slide" onclick="nextSlide()" 
+            style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
+                   background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px;
+                   cursor: pointer; border-radius: 50%;">❯</button>
+  </div>
+</section>
+
+<style>
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .carousel {
+      max-width: 100%;
+    }
+    .carousel-item img {
+      height: 200px;
+    }
+  }
+  /* Future: Add indicator dots or pause on hover */
+</style>
+
+<!-- JS moved to theme.js for better performance -->
+
+{% schema %}
+{
+  "name": "New Arrivals",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Section Title", "default": "Recién Llegados" }
+  ],
+  "blocks": [
+    {
+      "type": "image_block",
+      "name": "Carousel Image",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "alt_text", "label": "Alt Text" }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [{ "name": "New Arrivals" }]
+}
+{% endschema %}

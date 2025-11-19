@@ -1,0 +1,86 @@
+{% comment %}
+Brands Page Template
+
+This is the base template for your Brands page.
+It includes the site header and footer, and calls the 'brands' section.
+
+You can customize the brands section to list your brands dynamically,
+and this template can be extended with additional content blocks,
+images, descriptions, prices, buttons, or promotional items.
+
+To use this template:
+- Create a Shopify page (e.g., "Brands")
+- Assign this template to that page in Shopify Admin
+
+Future:
+- Add more sections for testimonials, promotions, or newsletters as needed.
+- Include blocks for rich media or FAQs about brands.
+{% endcomment %}
+
+{% section 'header' %}
+
+<main style="margin-top: 70px; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 2rem;" role="main" aria-labelledby="brands-page-title">
+
+  <h1 id="brands-page-title" class="visually-hidden">{{ page.title }}</h1>
+
+  <!-- Brands Section -->
+  {% section 'brands' %}
+
+  <!-- Future content space placeholders -->
+
+  <!-- Space for brand descriptions or mission statements -->
+  <section class="brand-info" style="margin-top: 4rem;" aria-labelledby="brand-info-title">
+    <h2 id="brand-info-title" style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">Más sobre nuestras marcas</h2>
+    <p style="font-size: 1rem; color: #333;">
+      Aquí puedes agregar información detallada acerca de las marcas que ofrecemos, su historia,
+      valores y cualquier detalle especial que quieras compartir con tus clientes.
+    </p>
+  </section>
+
+  <!-- Space for promoting featured products or collections -->
+  <section class="featured-brand-products" style="margin-top: 6rem;" aria-labelledby="featured-products-title">
+    <h2 id="featured-products-title" style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">Productos destacados</h2>
+    <!-- Placeholder for future featured products grid or sliders -->
+    <!-- Example static placeholder — replace with dynamic content as you build -->
+    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+      <!-- Add product cards or promotion blocks here -->
+    </div>
+  </section>
+
+  <!-- Space reserved for future brand promotions, sales, or newsletters -->
+  <section class="brand-promotions" style="margin-top: 6rem; padding: 2rem; background: var(--yellow); color: var(--black); text-align: center; border-radius: 10px;" aria-labelledby="brand-promotions-title">
+    <h2 id="brand-promotions-title" style="font-weight: 700;">Promociones especiales</h2>
+    <p>Aquí podrías añadir promociones especiales para las marcas, ofertas exclusivas o descuentos.</p>
+    <a href="/collections/sale" class="promotion-button" style="margin-top: 1rem; display: inline-block;" aria-label="View special offers">Ver ofertas</a>
+  </section>
+
+  <!-- Additional future sections (team, FAQ, testimonials) can be added here -->
+
+</main>
+
+{% section 'footer' %}
+
+<style>
+  /* Responsive design */
+  @media (max-width: 768px) {
+    main {
+      padding: 1rem;
+    }
+    .brand-info, .featured-brand-products, .brand-promotions {
+      margin-top: 2rem;
+      padding: 1rem;
+    }
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  /* Future: Add animations or dynamic content loading */
+</style>

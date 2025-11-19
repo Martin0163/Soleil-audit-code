@@ -1,0 +1,32 @@
+{% comment %}
+Homepage Template
+- Includes header & footer sections
+- Main container with margin and max-width for consistent layout
+- Includes modular sections: hero, brands, products, promotions, new arrivals
+- Feel free to add, remove, or reorder sections as needed for your design
+- Future improvements: Add dynamic section loading or A/B testing.
+{% endcomment %}
+
+{% section 'header' %}
+
+<main style="margin-top: 70px; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 2rem;" role="main" aria-label="Homepage content">
+  
+  {% section 'hero' %}
+  {% section 'brands' %}
+  {% section 'products' %}
+  {% section 'promotions' %}
+  {% section 'new-arrivals' %}
+
+</main>
+
+{% section 'footer' %}
+
+<style>
+  /* Responsive design */
+  @media (max-width: 768px) {
+    main {
+      padding: 1rem;
+    }
+  }
+  /* Future: Add section spacing or animations */
+</style>
