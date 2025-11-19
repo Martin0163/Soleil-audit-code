@@ -1,0 +1,65 @@
+{% comment %}
+  Brands Page Template - Refactored
+  Features:
+  - Brand showcase
+  - Brand grid layout
+  - Search/filter functionality
+{% endcomment %}
+
+<div class="page-brands-template">
+  
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">{{ page.title }}</h1>
+      {% if page.content != blank %}
+        <div class="page-description rte">
+          {{ page.content }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% section 'brands' %}
+
+</div>
+
+<style>
+  .page-brands-template {
+    padding: var(--space-4xl) 0;
+    background: var(--color-white);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-4xl);
+  }
+
+  .page-title {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-lg);
+  }
+
+  .page-description {
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-gray-600);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .page-brands-template {
+      padding: var(--space-3xl) 0;
+    }
+
+    .page-title {
+      font-size: var(--font-size-3xl);
+    }
+
+    .page-description {
+      font-size: var(--font-size-base);
+    }
+  }
+</style>

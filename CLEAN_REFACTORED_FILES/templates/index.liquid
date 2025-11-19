@@ -1,0 +1,52 @@
+{% comment %}
+  Homepage Template - Refactored
+  Features:
+  - Modular section-based layout
+  - Dynamic content blocks
+  - Optimized for performance
+  - SEO friendly
+{% endcomment %}
+
+{% section 'hero' %}
+{% section 'promotions_banner' %}
+{% section 'new_arrivals' %}
+{% section 'dreams' %}
+{% section 'products' %}
+{% section 'brands' %}
+{% section 'promotions' %}
+{% section 'about_us' %}
+
+<style>
+  /* Homepage specific styles */
+  .template-index {
+    background: var(--color-white);
+  }
+
+  /* Section spacing */
+  .template-index .hero-section {
+    margin-bottom: 0;
+  }
+
+  .template-index section + section {
+    margin-top: var(--space-4xl);
+  }
+
+  /* Responsive spacing */
+  @media (max-width: 768px) {
+    .template-index section + section {
+      margin-top: var(--space-3xl);
+    }
+  }
+</style>
+
+<script>
+  // Homepage specific JavaScript
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Soleil Beauty Shop - Homepage loaded');
+    
+    // Track homepage view
+    if (typeof analytics !== 'undefined') {
+      analytics.track('Homepage Viewed');
+    }
+  });
+</script>
