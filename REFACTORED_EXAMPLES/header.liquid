@@ -1,0 +1,427 @@
+{% comment %}
+  Header Section - Refactored
+  
+  Features:
+  - Fixed header with hide/show on scroll
+  - Responsive navigation with mobile menu
+  - Search overlay
+  - Account dropdown
+  - Cart drawer trigger
+  - Announcement bar
+  - Proper SVG icons
+  - Schema-driven customization
+  - Accessibility compliant
+  
+  Usage: {% section 'header' %}
+{% endcomment %}
+
+{% if section.settings.show_announcement %}
+  <div class="announcement-bar">
+    <div class="container">
+      {{ section.settings.announcement_text }}
+    </div>
+  </div>
+{% endif %}
+
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    
+    {%comment%} Logo {%endcomment%}
+    <div class="site-logo">
+      <a href="{{ routes.root_url }}" aria-label="Go to {{ shop.name }} homepage">
+        {% if section.settings.logo %}
+          <img 
+            src="{{ section.settings.logo | image_url: width: 300 }}" 
+            srcset="
+              {{ section.settings.logo | image_url: width: 150 }} 150w,
+              {{ section.settings.logo | image_url: width: 300 }} 300w
+            "
+            sizes="(max-width: 768px) 150px, 200px"
+            alt="{{ shop.name }}" 
+            width="200" 
+            height="auto"
+            loading="eager"
+          />
+        {% else %}
+          <span class="site-logo-text">{{ shop.name }}</span>
+        {% endif %}
+      </a>
+    </div>
+
+    {%comment%} Mobile Menu Toggle {%endcomment%}
+    <button 
+      class="mobile-menu-toggle" 
+      id="mobile-menu-toggle"
+      aria-expanded="false" 
+      aria-controls="main-navigation"
+      aria-label="Toggle navigation menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    {%comment%} Main Navigation {%endcomment%}
+    <nav class="main-nav" id="main-navigation" role="navigation" aria-label="Main navigation">
+      <ul class="nav-links" role="menubar">
+        
+        {%comment%} Home Link - Hide on homepage {%endcomment%}
+        {% unless template.name == 'index' %}
+          <li class="nav-item" role="none">
+            <a href="{{ routes.root_url }}" class="nav-link" role="menuitem">
+              {{ section.settings.nav_home_text | default: 'Home' }}
+            </a>
+          </li>
+        {% endunless %}
+
+        {%comment%} Products Link - Hide on products/collection pages {%endcomment%}
+        {% unless template.name == 'collection' or template.name == 'product' %}
+          <li class="nav-item" role="none">
+            <a href="{{ routes.all_products_collection_url }}" class="nav-link" role="menuitem">
+              {{ section.settings.nav_products_text | default: 'Products' }}
+            </a>
+          </li>
+        {% endunless %}
+
+        {%comment%} Brands Link - Hide on brands page {%endcomment%}
+        {% unless request.path contains '/collections/brands' or request.path contains '/pages/brands' %}
+          <li class="nav-item" role="none">
+            <a href="{{ section.settings.brands_url | default: '/collections/brands' }}" class="nav-link" role="menuitem">
+              {{ section.settings.nav_brands_text | default: 'Brands' }}
+            </a>
+          </li>
+        {% endunless %}
+
+        {%comment%} Custom Menu Links {%endcomment%}
+        {% if section.settings.main_menu != blank %}
+          {% assign main_menu = linklists[section.settings.main_menu] %}
+          {% for link in main_menu.links %}
+            <li class="nav-item" role="none">
+              <a href="{{ link.url }}" class="nav-link" role="menuitem">
+                {{ link.title }}
+              </a>
+              
+              {%comment%} Dropdown Menu {%endcomment%}
+              {% if link.links != blank %}
+                <ul class="nav-dropdown" role="menu" aria-label="{{ link.title }} submenu">
+                  {% for sublink in link.links %}
+                    <li role="none">
+                      <a href="{{ sublink.url }}" class="nav-dropdown-link" role="menuitem">
+                        {{ sublink.title }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </li>
+          {% endfor %}
+        {% endif %}
+
+      </ul>
+    </nav>
+
+    {%comment%} Header Actions {%endcomment%}
+    <div class="header-actions">
+      
+      {%comment%} Search Icon {%endcomment%}
+      {% if section.settings.show_search %}
+        <button 
+          class="header-icon" 
+          id="search-toggle"
+          aria-label="Open search"
+          aria-expanded="false"
+          aria-controls="search-overlay"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </button>
+      {% endif %}
+
+      {%comment%} Account Icon {%endcomment%}
+      {% if section.settings.show_account %}
+        <a 
+          href="{{ routes.account_url }}" 
+          class="header-icon"
+          aria-label="{% if customer %}My account{% else %}Login{% endif %}"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+          </svg>
+        </a>
+      {% endif %}
+
+      {%comment%} Cart Icon {%endcomment%}
+      <button 
+        class="header-icon" 
+        id="cart-toggle"
+        aria-label="Open cart ({{ cart.item_count }} items)"
+        aria-expanded="false"
+        aria-controls="cart-drawer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+        </svg>
+        {% if cart.item_count > 0 %}
+          <span class="cart-count" aria-live="polite">{{ cart.item_count }}</span>
+        {% endif %}
+      </button>
+
+    </div>
+
+  </div>
+</header>
+
+{%comment%} Search Overlay {%endcomment%}
+{% if section.settings.show_search %}
+  <div class="search-overlay" id="search-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="search-overlay-content">
+      <button 
+        class="search-overlay-close" 
+        id="search-close"
+        aria-label="Close search"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+        <input 
+          type="search" 
+          name="q" 
+          placeholder="{{ section.settings.search_placeholder | default: 'Search products...' }}"
+          class="search-input"
+          autocomplete="off"
+          aria-label="Search"
+        />
+        <button type="submit" class="search-submit" aria-label="Submit search">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </button>
+      </form>
+      
+      <div id="search-results" class="search-results" aria-live="polite"></div>
+    </div>
+  </div>
+{% endif %}
+
+<style>
+  /* Search Overlay Styles */
+  .search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--duration-base) var(--ease-out),
+                visibility var(--duration-base) var(--ease-out);
+  }
+
+  .search-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .search-overlay-content {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    padding: var(--space-xl);
+  }
+
+  .search-overlay-close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+
+  .search-overlay-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .search-overlay-close svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--color-white);
+  }
+
+  .search-form {
+    position: relative;
+    margin-bottom: var(--space-xl);
+  }
+
+  .search-input {
+    width: 100%;
+    padding: var(--space-lg) var(--space-xl);
+    padding-right: 60px;
+    font-size: var(--font-size-xl);
+    background: var(--color-white);
+    border: none;
+    border-radius: var(--radius-xl);
+    color: var(--color-black);
+  }
+
+  .search-input:focus {
+    outline: 2px solid var(--color-yellow);
+    outline-offset: 2px;
+  }
+
+  .search-submit {
+    position: absolute;
+    right: var(--space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-yellow);
+    border-radius: var(--radius-full);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .search-submit:hover {
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .search-submit svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--color-black);
+  }
+
+  .search-results {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .search-overlay-content {
+      padding: var(--space-md);
+    }
+
+    .search-input {
+      font-size: var(--font-size-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image",
+      "info": "Recommended size: 300x100px"
+    },
+    {
+      "type": "header",
+      "content": "Announcement Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "announcement_text",
+      "label": "Announcement text",
+      "default": "<p>Free shipping on orders over $50! ✨</p>"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "main_menu",
+      "label": "Main menu",
+      "info": "Select a menu from Navigation settings"
+    },
+    {
+      "type": "text",
+      "id": "nav_home_text",
+      "label": "Home link text",
+      "default": "Home"
+    },
+    {
+      "type": "text",
+      "id": "nav_products_text",
+      "label": "Products link text",
+      "default": "Products"
+    },
+    {
+      "type": "text",
+      "id": "nav_brands_text",
+      "label": "Brands link text",
+      "default": "Brands"
+    },
+    {
+      "type": "url",
+      "id": "brands_url",
+      "label": "Brands page URL",
+      "default": "/collections/brands"
+    },
+    {
+      "type": "header",
+      "content": "Header Actions"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder text",
+      "default": "Search products..."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account link",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
+    }
+  ]
+}
+{% endschema %}
