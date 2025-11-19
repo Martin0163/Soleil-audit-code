@@ -1,12 +1,7 @@
 /**
- * Ajax Cart Module - Refactored
- * Handles all cart operations with smooth animations and error handling
- * Features:
- * - Optimistic UI updates
- * - Loading states
- * - Error handling with retry
- * - Accessibility announcements
- * - Smooth animations
+ * Ajax Cart - Refactored
+ * Handles all cart operations via AJAX
+ * Version: 2.0
  */
 
 class AjaxCart {
@@ -18,62 +13,67 @@ class AjaxCart {
 
   init() {
     this.bindEvents();
-    this.fetchCart();
+    this.getCart();
   }
 
   bindEvents() {
-    // Add to cart buttons
-    document.addEventListener('click', (e) => {
-      if (e.target.matches('[data-add-to-cart]')) {
+    // Add to cart forms
+    document.addEventListener('submit', (e) => {
+      if (e.target.matches('form[action="/cart/add"]')) {
         e.preventDefault();
-        this.addToCart(e.target);
+        this.addItem(e.target);
       }
     });
 
-    // Update quantity
+    // Update cart quantity
     document.addEventListener('change', (e) => {
-      if (e.target.matches('[data-cart-quantity]')) {
-        this.updateQuantity(e.target);
+      if (e.target.matches('.cart-quantity-input')) {
+        this.updateItem(e.target);
       }
     });
 
-    // Remove item
+    // Remove from cart
     document.addEventListener('click', (e) => {
-      if (e.target.matches('[data-cart-remove]')) {
+      if (e.target.closest('.cart-remove-btn')) {
         e.preventDefault();
-        this.removeItem(e.target);
+        const btn = e.target.closest('.cart-remove-btn');
+        this.removeItem(btn.dataset.key);
       }
     });
 
-    // Open/close cart drawer
-    document.addEventListener('click', (e) => {
-      if (e.target.matches('[data-cart-toggle]')) {
-        e.preventDefault();
-        this.toggleCart();
-      }
-    });
-  }
-
-  async fetchCart() {
-    try {
-      const response = await fetch('/cart.js');
-      this.cart = await response.json();
-      this.updateCartUI();
-      return this.cart;
-    } catch (error) {
-      this.handleError('Failed to fetch cart', error);
+    // Cart note update
+    const cartNote = document.querySelector('#cart-note');
+    if (cartNote) {
+      cartNote.addEventListener('blur', () => {
+        this.updateNote(cartNote.value);
+      });
     }
   }
 
-  async addToCart(button) {
-    if (this.isUpdating) return;
+  async getCart() {
+    try {
+      const response = await fetch('/cart.js');
+      this.cart = await response.json();
+      this.updateUI();
+      return this.cart;
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      return null;
+    }
+  }
 
-    const form = button.closest('form');
-    const formData = new FormData(form);
+  async addItem(form) {
+    if (this.isUpdating) return;
     
-    // Show loading state
-    this.setLoadingState(button, true);
     this.isUpdating = true;
+    const formData = new FormData(form);
+    const submitBtn = form.querySelector('[type="submit"]');
+    
+    // Add loading state
+    if (submitBtn) {
+      submitBtn.classList.add('is-loading');
+      submitBtn.disabled = true;
+    }
 
     try {
       const response = await fetch('/cart/add.js', {
@@ -81,337 +81,258 @@ class AjaxCart {
         body: formData
       });
 
-      if (!response.ok) throw new Error('Failed to add to cart');
+      if (!response.ok) {
+        throw new Error('Failed to add item');
+      }
 
       const item = await response.json();
       
-      // Optimistic update
-      this.cart.item_count += item.quantity;
-      this.updateCartBadge();
+      // Refresh cart
+      await this.getCart();
       
-      // Fetch full cart
-      await this.fetchCart();
-      
-      // Show success animation
-      this.showSuccessAnimation(button);
+      // Show success notification
+      this.showNotification('Item added to cart!', 'success');
       
       // Open cart drawer
-      this.openCart();
+      this.openCartDrawer();
       
-      // Announce to screen readers
-      this.announce(`${item.product_title} added to cart`);
+      // Dispatch event
+      document.dispatchEvent(new CustomEvent('cart:item-added', { detail: item }));
       
     } catch (error) {
-      this.handleError('Failed to add item to cart', error);
-      this.showErrorAnimation(button);
+      console.error('Error adding item:', error);
+      this.showNotification('Error adding item to cart', 'error');
     } finally {
-      this.setLoadingState(button, false);
+      if (submitBtn) {
+        submitBtn.classList.remove('is-loading');
+        submitBtn.disabled = false;
+      }
       this.isUpdating = false;
     }
   }
 
-  async updateQuantity(input) {
+  async updateItem(input) {
     if (this.isUpdating) return;
-
-    const lineItem = input.dataset.cartQuantity;
-    const newQuantity = parseInt(input.value);
-    const oldQuantity = parseInt(input.dataset.oldValue || input.value);
-
-    if (newQuantity === oldQuantity) return;
-
-    // Optimistic update
-    input.dataset.oldValue = newQuantity;
-    this.setLoadingState(input.closest('.cart-item'), true);
+    
     this.isUpdating = true;
+    const line = parseInt(input.dataset.line);
+    const quantity = parseInt(input.value);
+
+    if (quantity < 1) {
+      input.value = 1;
+      this.isUpdating = false;
+      return;
+    }
 
     try {
       const response = await fetch('/cart/change.js', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          line: lineItem,
-          quantity: newQuantity
+          line: line,
+          quantity: quantity
         })
       });
 
-      if (!response.ok) throw new Error('Failed to update quantity');
+      if (!response.ok) {
+        throw new Error('Failed to update item');
+      }
 
       this.cart = await response.json();
-      this.updateCartUI();
+      this.updateUI();
       
-      this.announce(`Quantity updated to ${newQuantity}`);
+      document.dispatchEvent(new CustomEvent('cart:updated', { detail: this.cart }));
       
     } catch (error) {
-      // Revert on error
-      input.value = oldQuantity;
-      input.dataset.oldValue = oldQuantity;
-      this.handleError('Failed to update quantity', error);
+      console.error('Error updating item:', error);
+      this.showNotification('Error updating cart', 'error');
     } finally {
-      this.setLoadingState(input.closest('.cart-item'), false);
       this.isUpdating = false;
     }
   }
 
-  async removeItem(button) {
+  async removeItem(key) {
     if (this.isUpdating) return;
-
-    const lineItem = button.dataset.cartRemove;
-    const cartItem = button.closest('.cart-item');
     
-    // Optimistic removal with animation
-    cartItem.style.opacity = '0.5';
     this.isUpdating = true;
 
     try {
       const response = await fetch('/cart/change.js', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          line: lineItem,
+          id: key,
           quantity: 0
         })
       });
 
-      if (!response.ok) throw new Error('Failed to remove item');
+      if (!response.ok) {
+        throw new Error('Failed to remove item');
+      }
 
       this.cart = await response.json();
+      this.updateUI();
       
-      // Animate removal
-      cartItem.style.transform = 'translateX(100%)';
-      cartItem.style.transition = 'all 0.3s ease';
+      this.showNotification('Item removed from cart', 'success');
       
-      setTimeout(() => {
-        this.updateCartUI();
-        this.announce('Item removed from cart');
-      }, 300);
+      document.dispatchEvent(new CustomEvent('cart:item-removed', { detail: { key } }));
       
     } catch (error) {
-      // Revert on error
-      cartItem.style.opacity = '1';
-      this.handleError('Failed to remove item', error);
+      console.error('Error removing item:', error);
+      this.showNotification('Error removing item', 'error');
     } finally {
       this.isUpdating = false;
     }
   }
 
-  updateCartUI() {
-    this.updateCartBadge();
-    this.updateCartDrawer();
-    this.updateCartTotal();
-  }
+  async updateNote(note) {
+    try {
+      const response = await fetch('/cart/update.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          note: note
+        })
+      });
 
-  updateCartBadge() {
-    const badges = document.querySelectorAll('[data-cart-count]');
-    badges.forEach(badge => {
-      const count = this.cart?.item_count || 0;
-      badge.textContent = count;
-      badge.style.display = count > 0 ? 'flex' : 'none';
+      if (!response.ok) {
+        throw new Error('Failed to update note');
+      }
+
+      this.cart = await response.json();
       
-      // Pulse animation
-      badge.classList.add('cart-badge-pulse');
-      setTimeout(() => badge.classList.remove('cart-badge-pulse'), 300);
-    });
-  }
-
-  updateCartDrawer() {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    if (!drawer) return;
-
-    const itemsContainer = drawer.querySelector('[data-cart-items]');
-    if (!itemsContainer) return;
-
-    if (this.cart.items.length === 0) {
-      itemsContainer.innerHTML = `
-        <div class="cart-empty">
-          <svg class="cart-empty-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
-          <p class="cart-empty-text">Your cart is empty</p>
-          <a href="/collections/all" class="btn btn-primary">Continue Shopping</a>
-        </div>
-      `;
-      return;
+    } catch (error) {
+      console.error('Error updating note:', error);
     }
-
-    itemsContainer.innerHTML = this.cart.items.map((item, index) => `
-      <div class="cart-item" data-line-item="${index + 1}">
-        <div class="cart-item-image">
-          <img src="${item.featured_image?.url || ''}" alt="${item.product_title}" loading="lazy">
-        </div>
-        <div class="cart-item-details">
-          <h4 class="cart-item-title">${item.product_title}</h4>
-          ${item.variant_title ? `<p class="cart-item-variant">${item.variant_title}</p>` : ''}
-          <div class="cart-item-price">
-            ${this.formatMoney(item.final_line_price)}
-          </div>
-        </div>
-        <div class="cart-item-quantity">
-          <button class="quantity-btn" onclick="this.nextElementSibling.stepDown(); this.nextElementSibling.dispatchEvent(new Event('change'))">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </button>
-          <input 
-            type="number" 
-            class="quantity-input" 
-            value="${item.quantity}" 
-            min="1" 
-            data-cart-quantity="${index + 1}"
-            data-old-value="${item.quantity}"
-            aria-label="Quantity for ${item.product_title}"
-          >
-          <button class="quantity-btn" onclick="this.previousElementSibling.stepUp(); this.previousElementSibling.dispatchEvent(new Event('change'))">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </button>
-        </div>
-        <button class="cart-item-remove" data-cart-remove="${index + 1}" aria-label="Remove ${item.product_title}">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-    `).join('');
   }
 
-  updateCartTotal() {
-    const totalElements = document.querySelectorAll('[data-cart-total]');
-    totalElements.forEach(el => {
-      el.textContent = this.formatMoney(this.cart?.total_price || 0);
+  updateUI() {
+    if (!this.cart) return;
+
+    // Update cart count
+    const cartCounts = document.querySelectorAll('.cart-count');
+    cartCounts.forEach(count => {
+      count.textContent = this.cart.item_count;
+      
+      if (this.cart.item_count > 0) {
+        count.classList.add('has-items');
+      } else {
+        count.classList.remove('has-items');
+      }
+    });
+
+    // Update cart total
+    const cartTotals = document.querySelectorAll('.cart-total-price');
+    cartTotals.forEach(total => {
+      total.textContent = this.formatMoney(this.cart.total_price);
+    });
+
+    // Update subtotal
+    const cartSubtotals = document.querySelectorAll('.cart-subtotal-price');
+    cartSubtotals.forEach(subtotal => {
+      subtotal.textContent = this.formatMoney(this.cart.total_price);
     });
 
     // Update free shipping progress
-    this.updateFreeShippingProgress();
+    this.updateShippingProgress();
   }
 
-  updateFreeShippingProgress() {
-    const progressBar = document.querySelector('[data-shipping-progress]');
-    if (!progressBar) return;
-
-    const freeShippingThreshold = 50000; // $50 in cents
-    const currentTotal = this.cart?.total_price || 0;
-    const percentage = Math.min((currentTotal / freeShippingThreshold) * 100, 100);
-
-    progressBar.style.width = `${percentage}%`;
-
-    const message = document.querySelector('[data-shipping-message]');
-    if (message) {
-      if (percentage >= 100) {
-        message.textContent = '🎉 You qualify for free shipping!';
-        message.classList.add('success');
-      } else {
-        const remaining = this.formatMoney(freeShippingThreshold - currentTotal);
-        message.textContent = `Add ${remaining} more for free shipping`;
-        message.classList.remove('success');
+  updateShippingProgress() {
+    const shippingBars = document.querySelectorAll('.mini-cart-shipping-bar');
+    
+    shippingBars.forEach(bar => {
+      const threshold = parseFloat(bar.dataset.threshold) * 100 || 5000; // Default $50
+      const progress = Math.min((this.cart.total_price / threshold) * 100, 100);
+      
+      const progressBar = bar.querySelector('.shipping-progress-bar');
+      const message = bar.querySelector('.shipping-message');
+      
+      if (progressBar) {
+        progressBar.style.width = `${progress}%`;
       }
+      
+      if (message && this.cart.total_price < threshold) {
+        const remaining = threshold - this.cart.total_price;
+        message.innerHTML = `You are <strong>${this.formatMoney(remaining)}</strong> away from free shipping!`;
+      } else if (message) {
+        message.innerHTML = '<svg class="icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.667 5L7.5 14.167L3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> You qualify for free shipping!';
+      }
+    });
+  }
+
+  openCartDrawer() {
+    const cartDrawer = document.querySelector('.mini-cart');
+    if (cartDrawer) {
+      cartDrawer.classList.add('is-open');
+      document.body.classList.add('cart-open');
     }
   }
 
-  toggleCart() {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    const overlay = document.querySelector('[data-cart-overlay]');
-    
-    if (!drawer) return;
-
-    const isOpen = drawer.classList.contains('active');
-    
-    if (isOpen) {
-      this.closeCart();
-    } else {
-      this.openCart();
+  closeCartDrawer() {
+    const cartDrawer = document.querySelector('.mini-cart');
+    if (cartDrawer) {
+      cartDrawer.classList.remove('is-open');
+      document.body.classList.remove('cart-open');
     }
   }
 
-  openCart() {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    const overlay = document.querySelector('[data-cart-overlay]');
-    
-    if (!drawer) return;
+  showNotification(message, type = 'success') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `cart-notification cart-notification--${type}`;
+    notification.innerHTML = `
+      <div class="cart-notification-content">
+        <span class="cart-notification-message">${message}</span>
+        <button class="cart-notification-close" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    `;
 
-    drawer.classList.add('active');
-    if (overlay) overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Focus first focusable element
-    const firstFocusable = drawer.querySelector('button, a, input');
-    if (firstFocusable) firstFocusable.focus();
+    document.body.appendChild(notification);
+
+    // Show notification
+    setTimeout(() => {
+      notification.classList.add('is-visible');
+    }, 10);
+
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+      this.hideNotification(notification);
+    }, 3000);
+
+    // Close button
+    const closeBtn = notification.querySelector('.cart-notification-close');
+    closeBtn.addEventListener('click', () => {
+      this.hideNotification(notification);
+    });
   }
 
-  closeCart() {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    const overlay = document.querySelector('[data-cart-overlay]');
-    
-    if (!drawer) return;
-
-    drawer.classList.remove('active');
-    if (overlay) overlay.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  setLoadingState(element, isLoading) {
-    if (isLoading) {
-      element.classList.add('loading');
-      element.disabled = true;
-    } else {
-      element.classList.remove('loading');
-      element.disabled = false;
-    }
-  }
-
-  showSuccessAnimation(button) {
-    button.classList.add('success');
-    setTimeout(() => button.classList.remove('success'), 1000);
-  }
-
-  showErrorAnimation(button) {
-    button.classList.add('error');
-    setTimeout(() => button.classList.remove('error'), 1000);
-  }
-
-  handleError(message, error) {
-    console.error(message, error);
-    
-    // Show user-friendly error message
-    const errorContainer = document.querySelector('[data-cart-error]');
-    if (errorContainer) {
-      errorContainer.textContent = message;
-      errorContainer.style.display = 'block';
-      setTimeout(() => {
-        errorContainer.style.display = 'none';
-      }, 5000);
-    }
-    
-    this.announce(message);
-  }
-
-  announce(message) {
-    const announcer = document.querySelector('[data-cart-announcer]') || this.createAnnouncer();
-    announcer.textContent = message;
-  }
-
-  createAnnouncer() {
-    const announcer = document.createElement('div');
-    announcer.setAttribute('data-cart-announcer', '');
-    announcer.setAttribute('role', 'status');
-    announcer.setAttribute('aria-live', 'polite');
-    announcer.setAttribute('aria-atomic', 'true');
-    announcer.style.position = 'absolute';
-    announcer.style.left = '-9999px';
-    document.body.appendChild(announcer);
-    return announcer;
+  hideNotification(notification) {
+    notification.classList.remove('is-visible');
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
   }
 
   formatMoney(cents) {
-    return `$${(cents / 100).toFixed(2)}`;
+    const amount = cents / 100;
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
   }
 }
 
-// Initialize cart when DOM is ready
+// Initialize on DOM ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     window.ajaxCart = new AjaxCart();
@@ -419,3 +340,68 @@ if (document.readyState === 'loading') {
 } else {
   window.ajaxCart = new AjaxCart();
 }
+
+// Add notification styles
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
+  .cart-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    max-width: 350px;
+  }
+
+  .cart-notification.is-visible {
+    transform: translateX(0);
+  }
+
+  .cart-notification--success {
+    border-left: 4px solid #10b981;
+  }
+
+  .cart-notification--error {
+    border-left: 4px solid #ef4444;
+  }
+
+  .cart-notification-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .cart-notification-message {
+    font-size: 0.9375rem;
+    color: #1a1a1a;
+  }
+
+  .cart-notification-close {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: #666;
+    flex-shrink: 0;
+  }
+
+  .cart-notification-close:hover {
+    color: #000;
+  }
+
+  @media (max-width: 768px) {
+    .cart-notification {
+      top: 10px;
+      right: 10px;
+      left: 10px;
+      max-width: none;
+    }
+  }
+`;
+document.head.appendChild(notificationStyles);

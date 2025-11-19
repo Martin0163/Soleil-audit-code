@@ -1,173 +1,345 @@
 {% comment %}
   Hero Section - Refactored
-  
   Features:
-  - Background image/video support
-  - Gradient overlays
-  - Multiple CTA buttons
-  - Text alignment options
-  - Slide-in animations
-  - Parallax scrolling option
-  - Height customization
-  - Fully responsive
-  - Schema-driven
-  
+  - Full-width hero with image/video background
+  - Animated text overlay
+  - CTA buttons
+  - Parallax effect
+  - Mobile optimized
   Usage: {% section 'hero' %}
 {% endcomment %}
 
-<section
-  class="hero hero--{{ section.settings.height }} hero--align-{{ section.settings.text_alignment }}"
+<section 
+  class="hero-section" 
   data-section-id="{{ section.id }}"
   data-section-type="hero"
-  {% if section.settings.enable_parallax %}data-parallax{% endif %}
+  style="--hero-height: {{ section.settings.height }}vh;"
 >
-  {%- comment -%} Background Media {%- endcomment -%}
-  <div class="hero__media">
-    {% if section.settings.video_url != blank %}
-      {%- comment -%} Video Background {%- endcomment -%}
-      <div class="hero__video-wrapper">
-        {% if section.settings.video_url contains 'youtube.com' or section.settings.video_url contains 'youtu.be' %}
-          {% assign video_id = section.settings.video_url | split: 'v=' | last | split: '&' | first %}
-          {% if section.settings.video_url contains 'youtu.be' %}
-            {% assign video_id = section.settings.video_url | split: 'youtu.be/' | last | split: '?' | first %}
-          {% endif %}
-          <iframe
-            class="hero__video"
-            src="https://www.youtube.com/embed/{{ video_id }}?autoplay=1&mute=1&loop=1&playlist={{ video_id }}&controls=0&showinfo=0&rel=0&modestbranding=1"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-            loading="lazy"
-          ></iframe>
-        {% elsif section.settings.video_url contains 'vimeo.com' %}
-          {% assign video_id = section.settings.video_url | split: 'vimeo.com/' | last %}
-          <iframe
-            class="hero__video"
-            src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1&muted=1&loop=1&background=1"
-            frameborder="0"
-            allow="autoplay; fullscreen"
-            allowfullscreen
-            loading="lazy"
-          ></iframe>
-        {% else %}
-          <video
-            class="hero__video"
-            autoplay
-            muted
-            loop
-            playsinline
-          >
-            <source src="{{ section.settings.video_url }}" type="video/mp4">
-          </video>
-        {% endif %}
+  <div class="hero-media">
+    {%- if section.settings.video_url != blank -%}
+      <div class="hero-video-wrapper">
+        <video 
+          class="hero-video" 
+          autoplay 
+          muted 
+          loop 
+          playsinline
+          poster="{{ section.settings.image | img_url: '2000x' }}"
+        >
+          <source src="{{ section.settings.video_url }}" type="video/mp4">
+        </video>
+        <div class="hero-overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
       </div>
-    {% elsif section.settings.image %}
-      {%- comment -%} Image Background {%- endcomment -%}
-      <picture class="hero__picture">
-        <source
-          media="(max-width: 768px)"
-          srcset="
-            {{ section.settings.image | image_url: width: 768 }} 768w,
-            {{ section.settings.image | image_url: width: 1024 }} 1024w
-          "
-        />
-        <source
-          media="(min-width: 769px)"
-          srcset="
-            {{ section.settings.image | image_url: width: 1440 }} 1440w,
-            {{ section.settings.image | image_url: width: 1920 }} 1920w,
-            {{ section.settings.image | image_url: width: 2560 }} 2560w
-          "
-        />
+    {%- elsif section.settings.image -%}
+      <div class="hero-image-wrapper">
         <img
-          src="{{ section.settings.image | image_url: width: 1920 }}"
-          alt="{{ section.settings.image.alt | escape | default: section.settings.heading }}"
-          class="hero__image"
+          src="{{ section.settings.image | img_url: '2000x' }}"
+          srcset="
+            {{ section.settings.image | img_url: '800x' }} 800w,
+            {{ section.settings.image | img_url: '1200x' }} 1200w,
+            {{ section.settings.image | img_url: '1600x' }} 1600w,
+            {{ section.settings.image | img_url: '2000x' }} 2000w
+          "
+          sizes="100vw"
+          alt="{{ section.settings.title | escape }}"
+          class="hero-image"
           loading="eager"
-          fetchpriority="high"
-          width="1920"
-          height="1080"
-        />
-      </picture>
-    {% else %}
-      {%- comment -%} Fallback Gradient {%- endcomment -%}
-      <div class="hero__gradient"></div>
-    {% endif %}
-    
-    {%- comment -%} Overlay {%- endcomment -%}
-    {% if section.settings.show_overlay %}
-      <div class="hero__overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}"></div>
-    {% endif %}
+        >
+        <div class="hero-overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+      </div>
+    {%- else -%}
+      <div class="hero-placeholder">
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        <div class="hero-overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+      </div>
+    {%- endif -%}
   </div>
-  
-  {%- comment -%} Content {%- endcomment -%}
-  <div class="hero__content-wrapper">
+
+  <div class="hero-content-wrapper">
     <div class="container">
-      <div class="hero__content" data-aos="fade-up" data-aos-duration="800">
-        
-        {%- comment -%} Eyebrow Text {%- endcomment -%}
-        {% if section.settings.eyebrow != blank %}
-          <p class="hero__eyebrow">
-            {{ section.settings.eyebrow }}
+      <div class="hero-content" style="text-align: {{ section.settings.text_alignment }};">
+        {%- if section.settings.subtitle != blank -%}
+          <p class="hero-subtitle animate-fade-up" data-delay="100">
+            {{ section.settings.subtitle }}
           </p>
-        {% endif %}
-        
-        {%- comment -%} Heading {%- endcomment -%}
-        {% if section.settings.heading != blank %}
-          <h1 class="hero__heading">
-            {{ section.settings.heading }}
+        {%- endif -%}
+
+        {%- if section.settings.title != blank -%}
+          <h1 class="hero-title animate-fade-up" data-delay="200">
+            {{ section.settings.title }}
           </h1>
-        {% endif %}
-        
-        {%- comment -%} Subheading {%- endcomment -%}
-        {% if section.settings.subheading != blank %}
-          <p class="hero__subheading">
-            {{ section.settings.subheading }}
-          </p>
-        {% endif %}
-        
-        {%- comment -%} CTA Buttons {%- endcomment -%}
-        {% if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank %}
-          <div class="hero__buttons">
-            {% if section.settings.button_label_1 != blank %}
-              <a
-                href="{{ section.settings.button_link_1 | default: '#' }}"
-                class="btn btn--{{ section.settings.button_style_1 }} btn--lg"
+        {%- endif -%}
+
+        {%- if section.settings.description != blank -%}
+          <div class="hero-description animate-fade-up" data-delay="300">
+            {{ section.settings.description }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank or section.settings.button_label_2 != blank -%}
+          <div class="hero-buttons animate-fade-up" data-delay="400">
+            {%- if section.settings.button_label != blank -%}
+              <a 
+                href="{{ section.settings.button_link }}" 
+                class="btn btn-primary btn-lg"
               >
-                {{ section.settings.button_label_1 }}
+                {{ section.settings.button_label }}
               </a>
-            {% endif %}
-            
-            {% if section.settings.button_label_2 != blank %}
-              <a
-                href="{{ section.settings.button_link_2 | default: '#' }}"
-                class="btn btn--{{ section.settings.button_style_2 }} btn--lg"
+            {%- endif -%}
+
+            {%- if section.settings.button_label_2 != blank -%}
+              <a 
+                href="{{ section.settings.button_link_2 }}" 
+                class="btn btn-secondary btn-lg"
               >
                 {{ section.settings.button_label_2 }}
               </a>
-            {% endif %}
+            {%- endif -%}
           </div>
-        {% endif %}
+        {%- endif -%}
       </div>
     </div>
   </div>
-  
-  {%- comment -%} Scroll Indicator {%- endcomment -%}
-  {% if section.settings.show_scroll_indicator %}
-    <div class="hero__scroll-indicator">
-      <button
-        type="button"
-        class="scroll-indicator"
-        data-scroll-to-next
-        aria-label="Scroll to content"
-      >
-        <svg class="icon icon--chevron-down" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+
+  {%- if section.settings.show_scroll_indicator -%}
+    <div class="hero-scroll-indicator">
+      <span class="scroll-text">{{ section.settings.scroll_text | default: 'Scroll' }}</span>
+      <svg class="scroll-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 5V19M12 19L5 12M12 19L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
-  {% endif %}
+  {%- endif -%}
 </section>
+
+<style>
+  .hero-section {
+    position: relative;
+    width: 100%;
+    height: var(--hero-height, 100vh);
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .hero-image-wrapper,
+  .hero-video-wrapper,
+  .hero-placeholder {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .hero-image,
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+    z-index: 1;
+  }
+
+  .hero-placeholder {
+    background: var(--color-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-placeholder .placeholder-svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+  }
+
+  .hero-content-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 2rem 0;
+  }
+
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--color-white);
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-yellow);
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--color-white);
+  }
+
+  .hero-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-buttons .btn {
+    min-width: 180px;
+  }
+
+  .hero-scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-white);
+    animation: bounce 2s infinite;
+  }
+
+  .scroll-text {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .scroll-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Animations */
+  .animate-fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .animate-fade-up[data-delay="100"] {
+    animation-delay: 0.1s;
+  }
+
+  .animate-fade-up[data-delay="200"] {
+    animation-delay: 0.2s;
+  }
+
+  .animate-fade-up[data-delay="300"] {
+    animation-delay: 0.3s;
+  }
+
+  .animate-fade-up[data-delay="400"] {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    40% {
+      transform: translateX(-50%) translateY(-10px);
+    }
+    60% {
+      transform: translateX(-50%) translateY(-5px);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .hero-section {
+      height: 80vh;
+      min-height: 600px;
+    }
+
+    .hero-content {
+      text-align: center !important;
+    }
+
+    .hero-subtitle {
+      font-size: 0.875rem;
+    }
+
+    .hero-description {
+      font-size: 1rem;
+    }
+
+    .hero-buttons {
+      justify-content: center;
+    }
+
+    .hero-buttons .btn {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-section {
+      height: 70vh;
+      min-height: 500px;
+    }
+  }
+</style>
+
+<script>
+  // Parallax effect for hero section
+  document.addEventListener('DOMContentLoaded', function() {
+    const heroSection = document.querySelector('.hero-section');
+    if (!heroSection) return;
+
+    const heroMedia = heroSection.querySelector('.hero-media');
+    
+    window.addEventListener('scroll', function() {
+      const scrolled = window.pageYOffset;
+      const rate = scrolled * 0.5;
+      
+      if (heroMedia) {
+        heroMedia.style.transform = `translate3d(0, ${rate}px, 0)`;
+      }
+    });
+  });
+</script>
 
 {% schema %}
 {
@@ -178,33 +350,19 @@
       "content": "Layout"
     },
     {
-      "type": "select",
+      "type": "range",
       "id": "height",
-      "label": "Section Height",
-      "options": [
-        {
-          "value": "small",
-          "label": "Small (400px)"
-        },
-        {
-          "value": "medium",
-          "label": "Medium (600px)"
-        },
-        {
-          "value": "large",
-          "label": "Large (800px)"
-        },
-        {
-          "value": "fullscreen",
-          "label": "Full Screen"
-        }
-      ],
-      "default": "large"
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Section height",
+      "default": 100
     },
     {
       "type": "select",
       "id": "text_alignment",
-      "label": "Text Alignment",
+      "label": "Text alignment",
       "options": [
         {
           "value": "left",
@@ -223,45 +381,28 @@
     },
     {
       "type": "header",
-      "content": "Background"
+      "content": "Media"
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Background Image",
-      "info": "Recommended: 1920x1080px"
+      "label": "Background image"
     },
     {
       "type": "text",
       "id": "video_url",
       "label": "Video URL",
-      "info": "YouTube, Vimeo, or direct MP4 link. Video will override image."
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_parallax",
-      "label": "Enable Parallax Effect",
-      "default": false
-    },
-    {
-      "type": "header",
-      "content": "Overlay"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_overlay",
-      "label": "Show Overlay",
-      "default": true
+      "info": "MP4 video URL. Video will override image."
     },
     {
       "type": "range",
       "id": "overlay_opacity",
-      "label": "Overlay Opacity",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "%",
-      "default": 40
+      "label": "Overlay opacity",
+      "default": 50
     },
     {
       "type": "header",
@@ -269,21 +410,21 @@
     },
     {
       "type": "text",
-      "id": "eyebrow",
-      "label": "Eyebrow Text",
+      "id": "subtitle",
+      "label": "Subtitle",
       "default": "New Collection"
     },
     {
-      "type": "textarea",
-      "id": "heading",
+      "type": "text",
+      "id": "title",
       "label": "Heading",
       "default": "Discover Your Beauty"
     },
     {
-      "type": "textarea",
-      "id": "subheading",
-      "label": "Subheading",
-      "default": "Premium makeup, skincare, and beauty products for the modern you."
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Explore our curated selection of premium beauty products and skincare essentials.</p>"
     },
     {
       "type": "header",
@@ -291,34 +432,14 @@
     },
     {
       "type": "text",
-      "id": "button_label_1",
-      "label": "Button Label",
+      "id": "button_label",
+      "label": "Button label",
       "default": "Shop Now"
     },
     {
       "type": "url",
-      "id": "button_link_1",
-      "label": "Button Link"
-    },
-    {
-      "type": "select",
-      "id": "button_style_1",
-      "label": "Button Style",
-      "options": [
-        {
-          "value": "primary",
-          "label": "Primary (Yellow)"
-        },
-        {
-          "value": "secondary",
-          "label": "Secondary (White)"
-        },
-        {
-          "value": "outline",
-          "label": "Outline"
-        }
-      ],
-      "default": "primary"
+      "id": "button_link",
+      "label": "Button link"
     },
     {
       "type": "header",
@@ -327,43 +448,28 @@
     {
       "type": "text",
       "id": "button_label_2",
-      "label": "Button Label",
-      "default": "Learn More"
+      "label": "Button label"
     },
     {
       "type": "url",
       "id": "button_link_2",
-      "label": "Button Link"
-    },
-    {
-      "type": "select",
-      "id": "button_style_2",
-      "label": "Button Style",
-      "options": [
-        {
-          "value": "primary",
-          "label": "Primary (Yellow)"
-        },
-        {
-          "value": "secondary",
-          "label": "Secondary (White)"
-        },
-        {
-          "value": "outline",
-          "label": "Outline"
-        }
-      ],
-      "default": "outline"
+      "label": "Button link"
     },
     {
       "type": "header",
-      "content": "Additional Options"
+      "content": "Scroll Indicator"
     },
     {
       "type": "checkbox",
       "id": "show_scroll_indicator",
-      "label": "Show Scroll Indicator",
+      "label": "Show scroll indicator",
       "default": true
+    },
+    {
+      "type": "text",
+      "id": "scroll_text",
+      "label": "Scroll text",
+      "default": "Scroll"
     }
   ],
   "presets": [
