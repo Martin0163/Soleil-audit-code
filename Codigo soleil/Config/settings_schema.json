@@ -70,13 +70,11 @@
         "info": "Use as a fallback hero image on pages without a specific image."
       },
       {
-        // {
         "type": "image_picker",
         "id": "image_mobile",
-        "label": "Mobile Hero Image"
+        "label": "Mobile Hero Image",
+        "info": "Use for mobile-optimized hero images."
       },
-
-      
       {
         "type": "image_picker",
         "id": "default_background_image",
