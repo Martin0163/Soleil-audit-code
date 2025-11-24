@@ -1,0 +1,359 @@
+<section 
+  class="hero-section" 
+  data-section-id="{{ section.id }}"
+  data-section-type="hero"
+  style="--hero-height: {{ section.settings.height }}vh;"
+>
+  <div class="hero-media">
+    <!-- Desktop image -->
+    <div class="hero-image-wrapper hero-image-desktop">
+      <img
+        src="{{ section.settings.image | image_url: width: 2000 }}"
+        srcset="
+          {{ section.settings.image | image_url: width: 800 }} 800w,
+          {{ section.settings.image | image_url: width: 1200 }} 1200w,
+          {{ section.settings.image | image_url: width: 1600 }} 1600w,
+          {{ section.settings.image | image_url: width: 2000 }} 2000w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.title | escape | default: 'Hero image' }}"
+        width="2000"
+        height="1125"
+        loading="eager"
+      >
+      <div class="hero-overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+    </div>
+
+    <!-- Mobile image -->
+    <div class="hero-image-wrapper hero-image-mobile">
+      <img
+        src="{{ section.settings.image_mobile | image_url: width: 1125 }}"
+        srcset="
+          {{ section.settings.image_mobile | image_url: width: 400 }} 400w,
+          {{ section.settings.image_mobile | image_url: width: 700 }} 700w,
+          {{ section.settings.image_mobile | image_url: width: 900 }} 900w,
+          {{ section.settings.image_mobile | image_url: width: 1125 }} 1125w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.title | escape | default: 'Hero image' }}"
+        width="1125"
+        height="2000"
+        loading="eager"
+      >
+      <div class="hero-overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+    </div>
+  </div>
+
+  <div class="hero-content-wrapper">
+    <div class="container">
+      <div class="hero-content" style="text-align: {{ section.settings.text_alignment }};">
+        {% if section.settings.subtitle != blank %}
+          <p class="hero-subtitle animate-fade-up" data-delay="100">{{ section.settings.subtitle }}</p>
+        {% endif %}
+        {% if section.settings.title != blank %}
+          <h1 class="hero-title animate-fade-up" data-delay="200">{{ section.settings.title }}</h1>
+        {% endif %}
+        {% if section.settings.description != blank %}
+          <div class="hero-description animate-fade-up" data-delay="300">{{ section.settings.description }}</div>
+        {% endif %}
+        {% if section.settings.button_label != blank or section.settings.button_label_2 != blank %}
+          <div class="hero-buttons animate-fade-up" data-delay="400">
+            {% if section.settings.button_label != blank %}
+              <a href="{{ section.settings.button_link }}" class="btn btn-primary btn-lg">{{ section.settings.button_label }}</a>
+            {% endif %}
+            {% if section.settings.button_label_2 != blank %}
+              <a href="{{ section.settings.button_link_2 }}" class="btn btn-secondary btn-lg">{{ section.settings.button_label_2 }}</a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if section.settings.show_scroll_indicator %}
+    <div class="hero-scroll-indicator">
+      <span class="scroll-text">{{ section.settings.scroll_text | default: 'Scroll' }}</span>
+      <svg class="scroll-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 5V19M12 19L5 12M12 19L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+    </div>
+  {% endif %}
+</section>
+
+<style>
+  .hero-section {
+    position: relative;
+    width: 100%;
+    height: var(--hero-height, 100vh);
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .hero-media {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .hero-image-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  .hero-image-desktop {
+    display: block;
+  }
+  .hero-image-mobile {
+    display: none;
+  }
+  .hero-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .hero-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    z-index: 1;
+  }
+  .hero-content-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 2rem 0;
+  }
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--color-white);
+    text-align: inherit;
+  }
+  .hero-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-yellow);
+    margin-bottom: 1rem;
+  }
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--color-white);
+  }
+  .hero-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    color: rgba(255,255,255,0.9);
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .hero-buttons .btn {
+    min-width: 180px;
+  }
+  .hero-scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-white);
+    animation: bounce 2s infinite;
+  }
+  .scroll-text {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .scroll-icon {
+    width: 24px;
+    height: 24px;
+  }
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    40% {
+      transform: translateX(-50%) translateY(-10px);
+    }
+    60% {
+      transform: translateX(-50%) translateY(-5px);
+    }
+  }
+  @media (max-width: 767px) {
+    .hero-image-desktop {
+      display: none;
+    }
+    .hero-image-mobile {
+      display: block;
+    }
+    .hero-section {
+      height: 80vh;
+      min-height: 600px;
+    }
+    .hero-content {
+      text-align: center !important;
+    }
+    .hero-subtitle {
+      font-size: 0.875rem;
+    }
+    .hero-description {
+      font-size: 1rem;
+    }
+    .hero-buttons {
+      justify-content: center;
+    }
+    .hero-buttons .btn {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+  @media (max-width: 480px) {
+    .hero-section {
+      height: 70vh;
+      min-height: 500px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const heroSection = document.querySelector(".hero-section");
+    if (!heroSection) return;
+
+    const heroMedia = heroSection.querySelector(".hero-media");
+    window.addEventListener("scroll", function () {
+      const scrolled = window.pageYOffset;
+      const rate = scrolled * 0.5;
+
+      if (heroMedia) {
+        heroMedia.style.transform = `translate3d(0, ${rate}px, 0)`;
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "range",
+      "id": "height",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Section height",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop Hero Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile Hero Image"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 50
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "New Collection"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Discover Your Beauty"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Explore our curated selection of premium beauty products and skincare essentials.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Show scroll indicator",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "scroll_text",
+      "label": "Scroll text",
+      "default": "Scroll"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

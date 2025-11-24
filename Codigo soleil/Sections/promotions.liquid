@@ -1,0 +1,1055 @@
+<section class="promotions-section" data-section-id="{{ section.id }}">
+
+  <div class="container">
+
+    
+
+    {% if section.settings.show_header %}
+
+    <div class="section-header">
+
+      {% if section.settings.subtitle %}
+
+        <span class="section-label">{{ section.settings.subtitle }}</span>
+
+      {% endif %}
+
+      <h2 class="section-title">{{ section.settings.title | default: 'Special Offers' }}</h2>
+
+      {% if section.settings.description %}
+
+        <p class="section-description">{{ section.settings.description }}</p>
+
+      {% endif %}
+
+    </div>
+
+    {% endif %}
+
+
+
+    {% if section.blocks.size > 0 %}
+
+      <div class="promotions-grid" data-layout="{{ section.settings.layout }}">
+
+        {% for block in section.blocks %}
+
+          {% if block.type == 'promotion' %}
+
+            <div class="promotion-card animate-on-scroll" {{ block.shopify_attributes }}>
+
+              <div class="promotion-card-inner">
+
+                
+
+                {% if block.settings.image %}
+
+                  <div class="promotion-image">
+
+                    <img
+  src="{{ block.settings.image | image_url: width: 800 }}"
+  srcset="
+    {{ block.settings.image | image_url: width: 400 }} 400w,
+    {{ block.settings.image | image_url: width: 600 }} 600w,
+    {{ block.settings.image | image_url: width: 800 }} 800w
+  "
+  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+  alt="{{ block.settings.title }}"
+  width="800"
+  height="600"  
+  loading="lazy"
+>
+
+                    <div class="promotion-overlay" style="opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+
+                  </div>
+
+                {% endif %}
+
+
+
+                <div class="promotion-content" style="text-align: {{ block.settings.text_alignment }};">
+
+                  
+
+                  {% if block.settings.badge_text %}
+
+                    <span class="promotion-badge">{{ block.settings.badge_text }}</span>
+
+                  {% endif %}
+
+
+
+                  {% if block.settings.title %}
+
+                    <h3 class="promotion-title">{{ block.settings.title }}</h3>
+
+                  {% endif %}
+
+
+
+                  {% if block.settings.description %}
+
+                    <p class="promotion-description">{{ block.settings.description }}</p>
+
+                  {% endif %}
+
+
+
+                  {% if block.settings.show_countdown and block.settings.countdown_date %}
+
+                    <div class="promotion-countdown" data-countdown="{{ block.settings.countdown_date }}">
+
+                      <div class="countdown-item">
+
+                        <span class="countdown-number" data-days>00</span>
+
+                        <span class="countdown-label">Days</span>
+
+                      </div>
+
+                      <div class="countdown-item">
+
+                        <span class="countdown-number" data-hours>00</span>
+
+                        <span class="countdown-label">Hours</span>
+
+                      </div>
+
+                      <div class="countdown-item">
+
+                        <span class="countdown-number" data-minutes>00</span>
+
+                        <span class="countdown-label">Mins</span>
+
+                      </div>
+
+                      <div class="countdown-item">
+
+                        <span class="countdown-number" data-seconds>00</span>
+
+                        <span class="countdown-label">Secs</span>
+
+                      </div>
+
+                    </div>
+
+                  {% endif %}
+
+
+
+                  {% if block.settings.button_text %}
+
+                    <a href="{{ block.settings.button_link }}" class="btn btn-{{ block.settings.button_style }}">
+
+                      {{ block.settings.button_text }}
+
+                    </a>
+
+                  {% endif %}
+
+
+
+                </div>
+
+              </div>
+
+            </div>
+
+          {% endif %}
+
+        {% endfor %}
+
+      </div>
+
+    {% else %}
+
+      <div class="promotions-empty">
+
+        <p>No promotions to display. Add promotions in the theme editor.</p>
+
+      </div>
+
+    {% endif %}
+
+
+
+  </div>
+
+</section>
+
+
+
+<style>
+
+  .promotions-section {
+
+    padding: var(--space-4xl) 0;
+
+    background: var(--color-gray-50);
+
+  }
+
+
+
+  .section-header {
+
+    text-align: center;
+
+    margin-bottom: var(--space-3xl);
+
+  }
+
+
+
+  .section-label {
+
+    display: inline-block;
+
+    font-size: var(--font-size-sm);
+
+    font-weight: var(--font-weight-semibold);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    color: var(--color-yellow);
+
+    margin-bottom: var(--space-sm);
+
+  }
+
+
+
+  .section-title {
+
+    font-size: var(--font-size-4xl);
+
+    font-weight: var(--font-weight-bold);
+
+    color: var(--color-black);
+
+    margin-bottom: var(--space-md);
+
+  }
+
+
+
+  .section-description {
+
+    font-size: var(--font-size-lg);
+
+    color: var(--color-gray-600);
+
+    max-width: 600px;
+
+    margin: 0 auto;
+
+  }
+
+
+
+  .promotions-grid {
+
+    display: grid;
+
+    gap: var(--space-xl);
+
+  }
+
+
+
+  .promotions-grid[data-layout="grid-2"] {
+
+    grid-template-columns: repeat(2, 1fr);
+
+  }
+
+
+
+  .promotions-grid[data-layout="grid-3"] {
+
+    grid-template-columns: repeat(3, 1fr);
+
+  }
+
+
+
+  .promotions-grid[data-layout="grid-4"] {
+
+    grid-template-columns: repeat(4, 1fr);
+
+  }
+
+
+
+  .promotions-grid[data-layout="masonry"] {
+
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+
+    grid-auto-rows: 200px;
+
+  }
+
+
+
+  .promotion-card {
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: var(--radius-xl);
+
+    background: var(--color-white);
+
+    box-shadow: var(--shadow-md);
+
+    transition: all var(--duration-base) var(--ease-out);
+
+    opacity: 0;
+
+    transform: translateY(20px);
+
+  }
+
+
+
+  .promotion-card.is-visible {
+
+    opacity: 1;
+
+    transform: translateY(0);
+
+  }
+
+
+
+  .promotion-card:hover {
+
+    box-shadow: var(--shadow-xl);
+
+    transform: translateY(-4px);
+
+  }
+
+
+
+  .promotion-card-inner {
+
+    position: relative;
+
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+  }
+
+
+
+  .promotion-image {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    z-index: 1;
+
+  }
+
+
+
+  .promotion-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+  }
+
+
+
+  .promotion-overlay {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+
+  }
+
+
+
+  .promotion-content {
+
+    position: relative;
+
+    z-index: 2;
+
+    padding: var(--space-2xl);
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    height: 100%;
+
+    color: var(--color-white);
+
+  }
+
+
+
+  .promotion-badge {
+
+    display: inline-block;
+
+    padding: var(--space-xs) var(--space-md);
+
+    background: var(--color-yellow);
+
+    color: var(--color-black);
+
+    font-size: var(--font-size-xs);
+
+    font-weight: var(--font-weight-bold);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    border-radius: var(--radius-full);
+
+    margin-bottom: var(--space-md);
+
+    width: fit-content;
+
+  }
+
+
+
+  .promotion-title {
+
+    font-size: var(--font-size-3xl);
+
+    font-weight: var(--font-weight-bold);
+
+    line-height: 1.2;
+
+    margin-bottom: var(--space-md);
+
+  }
+
+
+
+  .promotion-description {
+
+    font-size: var(--font-size-lg);
+
+    line-height: var(--line-height-relaxed);
+
+    margin-bottom: var(--space-lg);
+
+    opacity: 0.9;
+
+  }
+
+
+
+  .promotion-countdown {
+
+    display: flex;
+
+    gap: var(--space-md);
+
+    margin-bottom: var(--space-lg);
+
+    justify-content: center;
+
+  }
+
+
+
+  .countdown-item {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    padding: var(--space-md);
+
+    background: rgba(255, 255, 255, 0.1);
+
+    backdrop-filter: blur(10px);
+
+    border-radius: var(--radius-lg);
+
+    min-width: 70px;
+
+  }
+
+
+
+  .countdown-number {
+
+    font-size: var(--font-size-3xl);
+
+    font-weight: var(--font-weight-bold);
+
+    line-height: 1;
+
+    margin-bottom: var(--space-xs);
+
+  }
+
+
+
+  .countdown-label {
+
+    font-size: var(--font-size-xs);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+
+    opacity: 0.8;
+
+  }
+
+
+
+  .promotions-empty {
+
+    text-align: center;
+
+    padding: var(--space-4xl) 0;
+
+    color: var(--color-gray-500);
+
+  }
+
+
+
+  /* Responsive */
+
+  @media (max-width: 1024px) {
+
+    .promotions-grid[data-layout="grid-3"],
+
+    .promotions-grid[data-layout="grid-4"] {
+
+      grid-template-columns: repeat(2, 1fr);
+
+    }
+
+  }
+
+
+
+  @media (max-width: 768px) {
+
+    .promotions-section {
+
+      padding: var(--space-3xl) 0;
+
+    }
+
+
+
+    .section-title {
+
+      font-size: var(--font-size-3xl);
+
+    }
+
+
+
+    .promotions-grid[data-layout="grid-2"],
+
+    .promotions-grid[data-layout="grid-3"],
+
+    .promotions-grid[data-layout="grid-4"] {
+
+      grid-template-columns: 1fr;
+
+    }
+
+
+
+    .promotion-title {
+
+      font-size: var(--font-size-2xl);
+
+    }
+
+
+
+    .promotion-countdown {
+
+      gap: var(--space-sm);
+
+    }
+
+
+
+    .countdown-item {
+
+      min-width: 60px;
+
+      padding: var(--space-sm);
+
+    }
+
+
+
+    .countdown-number {
+
+      font-size: var(--font-size-2xl);
+
+    }
+
+  }
+
+</style>
+
+
+
+<script>
+
+  // Countdown timer functionality
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    const countdowns = document.querySelectorAll('[data-countdown]');
+
+    
+
+    countdowns.forEach(countdown => {
+
+      const endDate = new Date(countdown.dataset.countdown).getTime();
+
+      
+
+      const updateCountdown = () => {
+
+        const now = new Date().getTime();
+
+        const distance = endDate - now;
+
+        
+
+        if (distance < 0) {
+
+          countdown.innerHTML = '<p class="countdown-expired">Offer Expired</p>';
+
+          return;
+
+        }
+
+        
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        
+
+        countdown.querySelector('[data-days]').textContent = String(days).padStart(2, '0');
+
+        countdown.querySelector('[data-hours]').textContent = String(hours).padStart(2, '0');
+
+        countdown.querySelector('[data-minutes]').textContent = String(minutes).padStart(2, '0');
+
+        countdown.querySelector('[data-seconds]').textContent = String(seconds).padStart(2, '0');
+
+      };
+
+      
+
+      updateCountdown();
+
+      setInterval(updateCountdown, 1000);
+
+    });
+
+
+
+    // Animate cards on scroll
+
+    const cards = document.querySelectorAll('.promotion-card');
+
+    const observer = new IntersectionObserver((entries) => {
+
+      entries.forEach((entry, index) => {
+
+        if (entry.isIntersecting) {
+
+          setTimeout(() => {
+
+            entry.target.classList.add('is-visible');
+
+          }, index * 100);
+
+          observer.unobserve(entry.target);
+
+        }
+
+      });
+
+    }, { threshold: 0.1 });
+
+
+
+    cards.forEach(card => observer.observe(card));
+
+  });
+
+</script>
+
+
+
+{% schema %}
+
+{
+
+  "name": "Promotions",
+
+  "settings": [
+
+    {
+
+      "type": "checkbox",
+
+      "id": "show_header",
+
+      "label": "Show section header",
+
+      "default": true
+
+    },
+
+    {
+
+      "type": "text",
+
+      "id": "subtitle",
+
+      "label": "Subtitle",
+
+      "default": "Limited Time"
+
+    },
+
+    {
+
+      "type": "text",
+
+      "id": "title",
+
+      "label": "Title",
+
+      "default": "Special Offers"
+
+    },
+
+    {
+
+      "type": "textarea",
+
+      "id": "description",
+
+      "label": "Description"
+
+    },
+
+    {
+
+      "type": "select",
+
+      "id": "layout",
+
+      "label": "Layout",
+
+      "options": [
+
+        {
+
+          "value": "grid-2",
+
+          "label": "2 Columns"
+
+        },
+
+        {
+
+          "value": "grid-3",
+
+          "label": "3 Columns"
+
+        },
+
+        {
+
+          "value": "grid-4",
+
+          "label": "4 Columns"
+
+        },
+
+        {
+
+          "value": "masonry",
+
+          "label": "Masonry"
+
+        }
+
+      ],
+
+      "default": "grid-3"
+
+    }
+
+  ],
+
+  "blocks": [
+
+    {
+
+      "type": "promotion",
+
+      "name": "Promotion",
+
+      "settings": [
+
+        {
+
+          "type": "image_picker",
+
+          "id": "image",
+
+          "label": "Image"
+
+        },
+
+        {
+
+          "type": "range",
+
+          "id": "overlay_opacity",
+
+          "min": 0,
+
+          "max": 100,
+
+          "step": 5,
+
+          "unit": "%",
+
+          "label": "Overlay opacity",
+
+          "default": 50
+
+        },
+
+        {
+
+          "type": "text",
+
+          "id": "badge_text",
+
+          "label": "Badge text",
+
+          "default": "Sale"
+
+        },
+
+        {
+
+          "type": "text",
+
+          "id": "title",
+
+          "label": "Title",
+
+          "default": "Special Offer"
+
+        },
+
+        {
+
+          "type": "textarea",
+
+          "id": "description",
+
+          "label": "Description",
+
+          "default": "Save up to 50% on selected items"
+
+        },
+
+        {
+
+          "type": "select",
+
+          "id": "text_alignment",
+
+          "label": "Text alignment",
+
+          "options": [
+
+            {
+
+              "value": "left",
+
+              "label": "Left"
+
+            },
+
+            {
+
+              "value": "center",
+
+              "label": "Center"
+
+            },
+
+            {
+
+              "value": "right",
+
+              "label": "Right"
+
+            }
+
+          ],
+
+          "default": "center"
+
+        },
+
+        {
+
+          "type": "checkbox",
+
+          "id": "show_countdown",
+
+          "label": "Show countdown timer",
+
+          "default": false
+
+        },
+
+        {
+
+          "type": "text",
+
+          "id": "countdown_date",
+
+          "label": "Countdown end date",
+
+          "info": "Format: YYYY-MM-DD HH:MM:SS"
+
+        },
+
+        {
+
+          "type": "text",
+
+          "id": "button_text",
+
+          "label": "Button text",
+
+          "default": "Shop Now"
+
+        },
+
+        {
+
+          "type": "url",
+
+          "id": "button_link",
+
+          "label": "Button link"
+
+        },
+
+        {
+
+          "type": "select",
+
+          "id": "button_style",
+
+          "label": "Button style",
+
+          "options": [
+
+            {
+
+              "value": "primary",
+
+              "label": "Primary"
+
+            },
+
+            {
+
+              "value": "secondary",
+
+              "label": "Secondary"
+
+            }
+
+          ],
+
+          "default": "primary"
+
+        }
+
+      ]
+
+    }
+
+  ],
+
+  "presets": [
+
+    {
+
+      "name": "Promotions",
+
+      "category": "Custom"
+
+    }
+
+  ]
+
+}
+
+{% endschema %}

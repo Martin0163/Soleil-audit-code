@@ -1,0 +1,797 @@
+<section class="new-arrivals-section" data-section-id="{{ section.id }}">
+
+  <div class="container">
+
+    
+
+    <div class="section-header">
+
+      {% if section.settings.subtitle %}
+
+        <span class="section-label">{{ section.settings.subtitle }}</span>
+
+      {% endif %}
+
+      <h2 class="section-title">{{ section.settings.title | default: 'New Arrivals' }}</h2>
+
+      {% if section.settings.description %}
+
+        <p class="section-description">{{ section.settings.description }}</p>
+
+      {% endif %}
+
+    </div>
+
+
+
+    {% assign collection = collections[section.settings.collection] %}
+
+    
+
+    {% if collection and collection.products.size > 0 %}
+
+      
+
+      {% if section.settings.layout == 'slider' %}
+
+        <div class="new-arrivals-slider" data-slider>
+
+          <div class="slider-wrapper">
+
+            <div class="slider-track">
+
+              {% for product in collection.products limit: section.settings.products_to_show %}
+
+                <div class="slider-item">
+
+                  {% render 'product_card', 
+
+                    product: product, 
+
+                    show_vendor: section.settings.show_vendor,
+
+                    show_quick_view: section.settings.show_quick_view
+
+                  %}
+
+                </div>
+
+              {% endfor %}
+
+            </div>
+
+          </div>
+
+          
+
+          <button class="slider-btn slider-btn-prev" aria-label="Previous">
+
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+            </svg>
+
+          </button>
+
+          <button class="slider-btn slider-btn-next" aria-label="Next">
+
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+
+              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+            </svg>
+
+          </button>
+
+          
+
+          <div class="slider-dots"></div>
+
+        </div>
+
+      {% else %}
+
+        <div class="new-arrivals-grid">
+
+          {% for product in collection.products limit: section.settings.products_to_show %}
+
+            <div class="grid-item animate-on-scroll">
+
+              {% render 'product_card', 
+
+                product: product, 
+
+                show_vendor: section.settings.show_vendor,
+
+                show_quick_view: section.settings.show_quick_view
+
+              %}
+
+            </div>
+
+          {% endfor %}
+
+        </div>
+
+      {% endif %}
+
+
+
+      {% if section.settings.show_view_all %}
+
+        <div class="new-arrivals-cta">
+
+          <a href="{{ collection.url }}" class="btn btn-primary btn-lg">
+
+            {{ section.settings.button_text | default: 'View All New Arrivals' }}
+
+          </a>
+
+        </div>
+
+      {% endif %}
+
+
+
+    {% else %}
+
+      <div class="new-arrivals-empty">
+
+        <p>No products found. Please select a collection in the theme editor.</p>
+
+      </div>
+
+    {% endif %}
+
+
+
+  </div>
+
+</section>
+
+
+
+<style>
+
+  .new-arrivals-section {
+
+    padding: var(--space-4xl) 0;
+
+    background: var(--color-white);
+
+  }
+
+
+
+  .section-header {
+
+    text-align: center;
+
+    margin-bottom: var(--space-3xl);
+
+  }
+
+
+
+  .section-label {
+
+    display: inline-block;
+
+    font-size: var(--font-size-sm);
+
+    font-weight: var(--font-weight-semibold);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    color: var(--color-yellow);
+
+    margin-bottom: var(--space-sm);
+
+  }
+
+
+
+  .section-title {
+
+    font-size: var(--font-size-4xl);
+
+    font-weight: var(--font-weight-bold);
+
+    color: var(--color-black);
+
+    margin-bottom: var(--space-md);
+
+  }
+
+
+
+  .section-description {
+
+    font-size: var(--font-size-lg);
+
+    color: var(--color-gray-600);
+
+    max-width: 600px;
+
+    margin: 0 auto;
+
+  }
+
+
+
+  /* Grid Layout */
+
+  .new-arrivals-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
+    gap: var(--space-xl);
+
+    margin-bottom: var(--space-3xl);
+
+  }
+
+
+
+  .grid-item {
+
+    opacity: 0;
+
+    transform: translateY(20px);
+
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+
+  }
+
+
+
+  .grid-item.is-visible {
+
+    opacity: 1;
+
+    transform: translateY(0);
+
+  }
+
+
+
+  /* Slider Layout */
+
+  .new-arrivals-slider {
+
+    position: relative;
+
+    margin-bottom: var(--space-3xl);
+
+  }
+
+
+
+  .slider-wrapper {
+
+    overflow: hidden;
+
+    margin: 0 calc(var(--space-xl) * -1);
+
+    padding: 0 var(--space-xl);
+
+  }
+
+
+
+  .slider-track {
+
+    display: flex;
+
+    gap: var(--space-xl);
+
+    transition: transform 0.5s var(--ease-out);
+
+  }
+
+
+
+  .slider-item {
+
+    flex: 0 0 calc(25% - var(--space-xl));
+
+    min-width: 280px;
+
+  }
+
+
+
+  .slider-btn {
+
+    position: absolute;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: var(--radius-full);
+
+    background: var(--color-white);
+
+    border: 2px solid var(--color-gray-200);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: all var(--duration-base) var(--ease-out);
+
+    z-index: 10;
+
+  }
+
+
+
+  .slider-btn:hover {
+
+    background: var(--color-yellow);
+
+    border-color: var(--color-yellow);
+
+    transform: translateY(-50%) scale(1.1);
+
+  }
+
+
+
+  .slider-btn-prev {
+
+    left: 0;
+
+  }
+
+
+
+  .slider-btn-next {
+
+    right: 0;
+
+  }
+
+
+
+  .slider-dots {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: var(--space-sm);
+
+    margin-top: var(--space-xl);
+
+  }
+
+
+
+  .slider-dot {
+
+    width: 10px;
+
+    height: 10px;
+
+    border-radius: var(--radius-full);
+
+    background: var(--color-gray-300);
+
+    cursor: pointer;
+
+    transition: all var(--duration-base) var(--ease-out);
+
+  }
+
+
+
+  .slider-dot.is-active {
+
+    background: var(--color-yellow);
+
+    width: 30px;
+
+  }
+
+
+
+  /* CTA */
+
+  .new-arrivals-cta {
+
+    text-align: center;
+
+  }
+
+
+
+  .new-arrivals-empty {
+
+    text-align: center;
+
+    padding: var(--space-4xl) 0;
+
+    color: var(--color-gray-500);
+
+  }
+
+
+
+  /* Responsive */
+
+  @media (max-width: 1024px) {
+
+    .slider-item {
+
+      flex: 0 0 calc(33.333% - var(--space-xl));
+
+    }
+
+  }
+
+
+
+  @media (max-width: 768px) {
+
+    .new-arrivals-section {
+
+      padding: var(--space-3xl) 0;
+
+    }
+
+
+
+    .section-title {
+
+      font-size: var(--font-size-3xl);
+
+    }
+
+
+
+    .new-arrivals-grid {
+
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+
+      gap: var(--space-lg);
+
+    }
+
+
+
+    .slider-item {
+
+      flex: 0 0 calc(50% - var(--space-lg));
+
+      min-width: 200px;
+
+    }
+
+
+
+    .slider-btn {
+
+      width: 40px;
+
+      height: 40px;
+
+    }
+
+  }
+
+</style>
+
+
+
+<script>
+
+  // Simple slider functionality
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    const sliders = document.querySelectorAll('[data-slider]');
+
+    
+
+    sliders.forEach(slider => {
+
+      const track = slider.querySelector('.slider-track');
+
+      const items = slider.querySelectorAll('.slider-item');
+
+      const prevBtn = slider.querySelector('.slider-btn-prev');
+
+      const nextBtn = slider.querySelector('.slider-btn-next');
+
+      const dotsContainer = slider.querySelector('.slider-dots');
+
+      
+
+      let currentIndex = 0;
+
+      const itemsPerView = window.innerWidth > 1024 ? 4 : window.innerWidth > 768 ? 3 : 2;
+
+      const maxIndex = Math.max(0, items.length - itemsPerView);
+
+      
+
+      // Create dots
+
+      for (let i = 0; i <= maxIndex; i) {
+
+        const dot = document.createElement('button');
+
+        dot.classList.add('slider-dot');
+
+        if (i === 0) dot.classList.add('is-active');
+
+        dot.addEventListener('click', () => goToSlide(i));
+
+        dotsContainer.appendChild(dot);
+
+      }
+
+      
+
+      const dots = dotsContainer.querySelectorAll('.slider-dot');
+
+      
+
+      function updateSlider() {
+
+        const itemWidth = items[0].offsetWidth;
+
+        const gap = parseInt(getComputedStyle(track).gap);
+
+        const offset = -(currentIndex * (itemWidth  gap));
+
+        track.style.transform = `translateX(${offset}px)`;
+
+        
+
+        dots.forEach((dot, index) => {
+
+          dot.classList.toggle('is-active', index === currentIndex);
+
+        });
+
+      }
+
+      
+
+      function goToSlide(index) {
+
+        currentIndex = Math.max(0, Math.min(index, maxIndex));
+
+        updateSlider();
+
+      }
+
+      
+
+      prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+
+      nextBtn.addEventListener('click', () => goToSlide(currentIndex  1));
+
+    });
+
+
+
+    // Animate grid items on scroll
+
+    const gridItems = document.querySelectorAll('.grid-item');
+
+    const observer = new IntersectionObserver((entries) => {
+
+      entries.forEach((entry, index) => {
+
+        if (entry.isIntersecting) {
+
+          setTimeout(() => {
+
+            entry.target.classList.add('is-visible');
+
+          }, index * 100);
+
+          observer.unobserve(entry.target);
+
+        }
+
+      });
+
+    }, { threshold: 0.1 });
+
+
+
+    gridItems.forEach(item => observer.observe(item));
+
+  });
+
+</script>
+
+
+
+{% schema %}
+
+{
+
+  "name": "New Arrivals",
+
+  "settings": [
+
+    {
+
+      "type": "text",
+
+      "id": "subtitle",
+
+      "label": "Subtitle",
+
+      "default": "Just In"
+
+    },
+
+    {
+
+      "type": "text",
+
+      "id": "title",
+
+      "label": "Title",
+
+      "default": "New Arrivals"
+
+    },
+
+    {
+
+      "type": "textarea",
+
+      "id": "description",
+
+      "label": "Description",
+
+      "default": "Discover our latest beauty essentials"
+
+    },
+
+    {
+
+      "type": "collection",
+
+      "id": "collection",
+
+      "label": "Collection"
+
+    },
+
+    {
+
+      "type": "range",
+
+      "id": "products_to_show",
+
+      "min": 4,
+
+      "max": 20,
+
+      "step": 1,
+
+      "label": "Products to show",
+
+      "default": 8
+
+    },
+
+    {
+
+      "type": "select",
+
+      "id": "layout",
+
+      "label": "Layout",
+
+      "options": [
+
+        {
+
+          "value": "grid",
+
+          "label": "Grid"
+
+        },
+
+        {
+
+          "value": "slider",
+
+          "label": "Slider"
+
+        }
+
+      ],
+
+      "default": "grid"
+
+    },
+
+    {
+
+      "type": "checkbox",
+
+      "id": "show_vendor",
+
+      "label": "Show vendor",
+
+      "default": true
+
+    },
+
+    {
+
+      "type": "checkbox",
+
+      "id": "show_quick_view",
+
+      "label": "Show quick view",
+
+      "default": true
+
+    },
+
+    {
+
+      "type": "checkbox",
+
+      "id": "show_view_all",
+
+      "label": "Show 'View All' button",
+
+      "default": true
+
+    },
+
+    {
+
+      "type": "text",
+
+      "id": "button_text",
+
+      "label": "Button text",
+
+      "default": "View All New Arrivals"
+
+    }
+
+  ],
+
+  "presets": [
+
+    {
+
+      "name": "New Arrivals",
+
+      "category": "Custom"
+
+    }
+
+  ]
+
+}
+
+{% endschema %}

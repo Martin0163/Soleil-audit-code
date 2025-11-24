@@ -1,0 +1,111 @@
+<div class="page-about-template">
+
+  
+
+  {% section 'about_us' %}
+
+
+
+  {% comment %} Additional content from page editor {% endcomment %}
+
+  {% if page.content != blank %}
+
+    <div class="container">
+
+      <div class="page-additional-content rte">
+
+        {{ page.content }}
+
+      </div>
+
+    </div>
+
+  {% endif %}
+
+
+
+</div>
+
+
+
+<style>
+
+  .page-about-template {
+
+    background: var(--color-white);
+
+  }
+
+
+
+  .page-additional-content {
+
+    max-width: 800px;
+
+    margin: var(--space-4xl) auto;
+
+    padding: var(--space-3xl) 0;
+
+    font-size: var(--font-size-lg);
+
+    line-height: var(--line-height-relaxed);
+
+    color: var(--color-gray-700);
+
+  }
+
+
+
+  /* Rich Text Editor Styles */
+
+  .page-additional-content h2 {
+
+    font-size: var(--font-size-3xl);
+
+    font-weight: var(--font-weight-bold);
+
+    margin-top: var(--space-3xl);
+
+    margin-bottom: var(--space-lg);
+
+  }
+
+
+
+  .page-additional-content p {
+
+    margin-bottom: var(--space-lg);
+
+  }
+
+
+
+  .page-additional-content img {
+
+    max-width: 100%;
+
+    height: auto;
+
+    border-radius: var(--radius-lg);
+
+    margin: var(--space-xl) 0;
+
+  }
+
+
+
+  /* Responsive */
+
+  @media (max-width: 768px) {
+
+    .page-additional-content {
+
+      font-size: var(--font-size-base);
+
+      padding: var(--space-2xl) 0;
+
+    }
+
+  }
+
+</style>

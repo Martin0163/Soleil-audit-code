@@ -1,0 +1,701 @@
+<div 
+
+  class="promo-banner" 
+
+  data-section-id="{{ section.id }}"
+
+  data-promo-banner
+
+  data-sticky="{{ section.settings.sticky }}"
+
+  data-dismissible="{{ section.settings.dismissible }}"
+
+  style="background-color: {{ section.settings.background_color }}; color: {{ section.settings.text_color }};"
+
+>
+
+  <div class="container">
+
+    <div class="promo-banner-content">
+
+      
+
+      {% if section.settings.icon %}
+
+        <div class="promo-icon">
+
+          {{ section.settings.icon }}
+
+        </div>
+
+      {% endif %}
+
+
+
+      <div class="promo-text">
+
+        {% if section.settings.text %}
+
+          <span class="promo-message">{{ section.settings.text }}</span>
+
+        {% endif %}
+
+
+
+        {% if section.settings.show_countdown and section.settings.countdown_date %}
+
+          <div class="promo-countdown" data-countdown="{{ section.settings.countdown_date }}">
+
+            <span class="countdown-label">{{ section.settings.countdown_label | default: 'Ends in:' }}</span>
+
+            <span class="countdown-timer">
+
+              <span data-days>00</span>d
+
+              <span data-hours>00</span>h
+
+              <span data-minutes>00</span>m
+
+              <span data-seconds>00</span>s
+
+            </span>
+
+          </div>
+
+        {% endif %}
+
+      </div>
+
+
+
+      {% if section.settings.button_text %}
+
+        <a href="{{ section.settings.button_link }}" class="promo-button">
+
+          {{ section.settings.button_text }}
+
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+
+            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+          </svg>
+
+        </a>
+
+      {% endif %}
+
+
+
+      {% if section.settings.dismissible %}
+
+        <button class="promo-close" data-promo-close aria-label="Close banner">
+
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+
+            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+
+          </svg>
+
+        </button>
+
+      {% endif %}
+
+
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<style>
+
+  .promo-banner {
+
+    position: relative;
+
+    padding: var(--space-md) 0;
+
+    z-index: var(--z-sticky);
+
+    transition: transform var(--duration-base) var(--ease-out);
+
+  }
+
+
+
+  .promo-banner[data-sticky="true"] {
+
+    position: sticky;
+
+    top: 0;
+
+  }
+
+
+
+  .promo-banner.is-hidden {
+
+    transform: translateY(-100%);
+
+  }
+
+
+
+  .promo-banner-content {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: var(--space-lg);
+
+    flex-wrap: wrap;
+
+  }
+
+
+
+  .promo-icon {
+
+    flex-shrink: 0;
+
+  }
+
+
+
+  .promo-icon svg {
+
+    width: 24px;
+
+    height: 24px;
+
+  }
+
+
+
+  .promo-text {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: var(--space-md);
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+  }
+
+
+
+  .promo-message {
+
+    font-size: var(--font-size-base);
+
+    font-weight: var(--font-weight-semibold);
+
+    text-align: center;
+
+  }
+
+
+
+  .promo-countdown {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: var(--space-sm);
+
+    font-size: var(--font-size-sm);
+
+  }
+
+
+
+  .countdown-label {
+
+    font-weight: var(--font-weight-normal);
+
+    opacity: 0.9;
+
+  }
+
+
+
+  .countdown-timer {
+
+    font-weight: var(--font-weight-bold);
+
+    font-family: 'Courier New', monospace;
+
+    letter-spacing: 0.05em;
+
+  }
+
+
+
+  .countdown-timer span {
+
+    display: inline-block;
+
+    min-width: 20px;
+
+    text-align: center;
+
+  }
+
+
+
+  .promo-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: var(--space-xs);
+
+    padding: var(--space-sm) var(--space-lg);
+
+    background: rgba(255, 255, 255, 0.2);
+
+    border: 1px solid currentColor;
+
+    border-radius: var(--radius-full);
+
+    font-size: var(--font-size-sm);
+
+    font-weight: var(--font-weight-semibold);
+
+    text-decoration: none;
+
+    transition: all var(--duration-base) var(--ease-out);
+
+  }
+
+
+
+  .promo-button:hover {
+
+    background: rgba(255, 255, 255, 0.3);
+
+    transform: translateX(4px);
+
+  }
+
+
+
+  .promo-close {
+
+    position: absolute;
+
+    right: var(--space-md);
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    background: none;
+
+    border: none;
+
+    cursor: pointer;
+
+    padding: var(--space-xs);
+
+    opacity: 0.7;
+
+    transition: opacity var(--duration-base) var(--ease-out);
+
+  }
+
+
+
+  .promo-close:hover {
+
+    opacity: 1;
+
+  }
+
+
+
+  /* Color Schemes */
+
+  .promo-banner[data-scheme="dark"] {
+
+    background: var(--color-black);
+
+    color: var(--color-white);
+
+  }
+
+
+
+  .promo-banner[data-scheme="yellow"] {
+
+    background: var(--color-yellow);
+
+    color: var(--color-black);
+
+  }
+
+
+
+  .promo-banner[data-scheme="gradient"] {
+
+    background: var(--gradient-yellow);
+
+    color: var(--color-black);
+
+  }
+
+
+
+  /* Responsive */
+
+  @media (max-width: 768px) {
+
+    .promo-banner {
+
+      padding: var(--space-sm) 0;
+
+    }
+
+
+
+    .promo-banner-content {
+
+      gap: var(--space-sm);
+
+      padding: 0 var(--space-2xl);
+
+    }
+
+
+
+    .promo-message {
+
+      font-size: var(--font-size-sm);
+
+    }
+
+
+
+    .promo-countdown {
+
+      font-size: var(--font-size-xs);
+
+    }
+
+
+
+    .promo-button {
+
+      padding: var(--space-xs) var(--space-md);
+
+      font-size: var(--font-size-xs);
+
+    }
+
+
+
+    .promo-close {
+
+      right: var(--space-sm);
+
+    }
+
+  }
+
+</style>
+
+
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    const promoBanner = document.querySelector('[data-promo-banner]');
+
+    if (!promoBanner) return;
+
+
+
+    const isDismissible = promoBanner.dataset.dismissible === 'true';
+
+    const sectionId = promoBanner.dataset.sectionId;
+
+    const storageKey = `promo-banner-${sectionId}-dismissed`;
+
+
+
+    // Check if banner was previously dismissed
+
+    if (isDismissible && localStorage.getItem(storageKey)) {
+
+      promoBanner.style.display = 'none';
+
+      return;
+
+    }
+
+
+
+    // Countdown functionality
+
+    const countdown = promoBanner.querySelector('[data-countdown]');
+
+    if (countdown) {
+
+      const endDate = new Date(countdown.dataset.countdown).getTime();
+
+      
+
+      const updateCountdown = () => {
+
+        const now = new Date().getTime();
+
+        const distance = endDate - now;
+
+        
+
+        if (distance < 0) {
+
+          countdown.innerHTML = '<span class="countdown-expired">Offer Expired</span>';
+
+          return;
+
+        }
+
+        
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        
+
+        const timer = countdown.querySelector('.countdown-timer');
+
+        if (timer) {
+
+          timer.querySelector('[data-days]').textContent = String(days).padStart(2, '0');
+
+          timer.querySelector('[data-hours]').textContent = String(hours).padStart(2, '0');
+
+          timer.querySelector('[data-minutes]').textContent = String(minutes).padStart(2, '0');
+
+          timer.querySelector('[data-seconds]').textContent = String(seconds).padStart(2, '0');
+
+        }
+
+      };
+
+      
+
+      updateCountdown();
+
+      setInterval(updateCountdown, 1000);
+
+    }
+
+
+
+    // Close functionality
+
+    const closeBtn = promoBanner.querySelector('[data-promo-close]');
+
+    if (closeBtn) {
+
+      closeBtn.addEventListener('click', () => {
+
+        promoBanner.classList.add('is-hidden');
+
+        setTimeout(() => {
+
+          promoBanner.style.display = 'none';
+
+        }, 300);
+
+        
+
+        if (isDismissible) {
+
+          localStorage.setItem(storageKey, 'true');
+
+        }
+
+      });
+
+    }
+
+  });
+
+</script>
+
+
+
+{% schema %}
+
+{
+
+  "name": "Promotions Banner",
+
+  "settings": [
+
+    {
+
+      "type": "text",
+
+      "id": "text",
+
+      "label": "Banner text",
+
+      "default": "Envio gratis en la compra de $500 o mas!"
+
+    },
+
+    {
+
+      "type": "html",
+
+      "id": "icon",
+
+      "label": "Icon (SVG)",
+
+      "info": "Optional icon to display before text"
+
+    },
+
+    {
+
+      "type": "color",
+
+      "id": "background_color",
+
+      "label": "Background color",
+
+      "default": "#000000"
+
+    },
+
+    {
+
+      "type": "color",
+
+      "id": "text_color",
+
+      "label": "Text color",
+
+      "default": "#FFFFFF"
+
+    },
+
+    {
+
+      "type": "checkbox",
+
+      "id": "sticky",
+
+      "label": "Make banner sticky",
+
+      "default": false
+
+    },
+
+    {
+
+      "type": "checkbox",
+
+      "id": "dismissible",
+
+      "label": "Allow users to dismiss",
+
+      "default": true
+
+    },
+
+    {
+
+      "type": "checkbox",
+
+      "id": "show_countdown",
+
+      "label": "Show countdown timer",
+
+      "default": false
+
+    },
+
+    {
+
+      "type": "text",
+
+      "id": "countdown_label",
+
+      "label": "Countdown label",
+
+      "default": "Ends in:"
+
+    },
+
+    {
+
+      "type": "text",
+
+      "id": "countdown_date",
+
+      "label": "Countdown end date",
+
+      "info": "Format: YYYY-MM-DD HH:MM:SS"
+
+    },
+
+    {
+
+      "type": "text",
+
+      "id": "button_text",
+
+      "label": "Button text"
+
+    },
+
+    {
+
+      "type": "url",
+
+      "id": "button_link",
+
+      "label": "Button link"
+
+    }
+
+  ],
+
+  "presets": [
+
+    {
+
+      "name": "Promotions Banner",
+
+      "category": "Custom"
+
+    }
+
+  ]
+
+}
+
+{% endschema %}

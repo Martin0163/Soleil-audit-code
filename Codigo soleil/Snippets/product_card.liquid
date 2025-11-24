@@ -1,0 +1,1004 @@
+{% liquid
+
+  assign on_sale = false
+
+  if product.compare_at_price > product.price
+
+    assign on_sale = true
+
+    assign savings = product.compare_at_price | minus: product.price
+
+    assign savings_percent = savings | times: 100 | divided_by: product.compare_at_price
+
+  endif
+
+  
+
+  assign is_new = false
+
+  assign days_since_published = 'now' | date: '%s' | minus: product.published_at | date: '%s' | divided_by: 86400
+
+  if days_since_published < 30
+
+    assign is_new = true
+
+  endif
+
+  
+
+  assign sold_out = true
+
+  if product.available
+
+    assign sold_out = false
+
+  endif
+
+  
+
+  assign has_variants = false
+
+  if product.variants.size > 1
+
+    assign has_variants = true
+
+  endif
+
+%}
+
+
+
+<article class="product-card" data-product-id="{{ product.id }}">
+
+  
+
+  {%- comment -%} Badges {%- endcomment -%}
+
+  {% if on_sale or is_new or sold_out %}
+
+    <div class="product-card__badges">
+
+      {% if sold_out %}
+
+        <span class="badge badge--sold-out">Sold Out</span>
+
+      {% elsif on_sale %}
+
+        <span class="badge badge--sale">-{{ savings_percent }}%</span>
+
+      {% elsif is_new %}
+
+        <span class="badge badge--new">New</span>
+
+      {% endif %}
+
+    </div>
+
+  {% endif %}
+
+  
+
+  {%- comment -%} Image Container {%- endcomment -%}
+
+  <div class="product-card__image-wrapper">
+
+    <a href="{{ product.url }}" class="product-card__image-link" aria-label="View {{ product.title | escape }}">
+
+      
+
+      {%- comment -%} Primary Image {%- endcomment -%}
+
+      {% if product.featured_image %}
+
+        <img
+
+          srcset="
+
+            {{ product.featured_image | image_url: width: 300 }} 300w,
+
+            {{ product.featured_image | image_url: width: 400 }} 400w,
+
+            {{ product.featured_image | image_url: width: 600 }} 600w
+
+          "
+
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+
+          src="{{ product.featured_image | image_url: width: 400 }}"
+
+          alt="{{ product.featured_image.alt | escape | default: product.title }}"
+
+          class="product-card__image product-card__image--primary"
+
+          loading="lazy"
+
+          width="400"
+
+          height="400"
+
+        />
+
+      {% else %}
+
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__image product-card__image--placeholder' }}
+
+      {% endif %}
+
+      
+
+      {%- comment -%} Secondary Image (Hover) {%- endcomment -%}
+
+      {% if product.images[1] %}
+
+        <img
+
+          srcset="
+
+            {{ product.images[1] | image_url: width: 300 }} 300w,
+
+            {{ product.images[1] | image_url: width: 400 }} 400w,
+
+            {{ product.images[1] | image_url: width: 600 }} 600w
+
+          "
+
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+
+          src="{{ product.images[1] | image_url: width: 400 }}"
+
+          alt="{{ product.images[1].alt | escape | default: product.title }}"
+
+          class="product-card__image product-card__image--secondary"
+
+          loading="lazy"
+
+          width="400"
+
+          height="400"
+
+        />
+
+      {% endif %}
+
+    </a>
+
+    
+
+    {%- comment -%} Quick Actions {%- endcomment -%}
+
+    <div class="product-card__actions">
+
+      
+
+      {%- comment -%} Wishlist Button {%- endcomment -%}
+
+      <button
+
+        type="button"
+
+        class="product-card__action-btn product-card__wishlist"
+
+        data-wishlist-toggle
+
+        data-product-handle="{{ product.handle }}"
+
+        aria-label="Add {{ product.title | escape }} to wishlist"
+
+      >
+
+        <svg class="icon icon--heart" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <path d="M10 18.35L8.55 17.03C3.4 12.36 0 9.27 0 5.5C0 2.41 2.42 0 5.5 0C7.24 0 8.91 0.81 10 2.08C11.09 0.81 12.76 0 14.5 0C17.58 0 20 2.41 20 5.5C20 9.27 16.6 12.36 11.45 17.03L10 18.35Z" fill="currentColor"/>
+
+        </svg>
+
+      </button>
+
+      
+
+      {%- comment -%} Quick View Button {%- endcomment -%}
+
+      <button
+
+        type="button"
+
+        class="product-card__action-btn product-card__quick-view"
+
+        data-quick-view
+
+        data-product-handle="{{ product.handle }}"
+
+        aria-label="Quick view {{ product.title | escape }}"
+
+      >
+
+        <svg class="icon icon--eye" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <path d="M10 4C4.5 4 1.5 10 1.5 10C1.5 10 4.5 16 10 16C15.5 16 18.5 10 18.5 10C18.5 10 15.5 4 10 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+        </svg>
+
+      </button>
+
+    </div>
+
+    
+
+    {%- comment -%} Quick Add to Cart (appears on hover) {%- endcomment -%}
+
+    {% unless sold_out %}
+
+      <div class="product-card__quick-add">
+
+        {% if has_variants %}
+
+          <a href="{{ product.url }}" class="btn btn--secondary btn--full">
+
+            Select Options
+
+          </a>
+
+        {% else %}
+
+          <button
+
+            type="button"
+
+            class="btn btn--primary btn--full"
+
+            data-add-to-cart
+
+            data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+
+          >
+
+            <span class="btn__text">Add to Cart</span>
+
+            <span class="btn__loader" hidden>
+
+              <svg class="spinner" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+
+                <circle class="spinner__path" cx="10" cy="10" r="8" fill="none" stroke-width="2"/>
+
+              </svg>
+
+            </span>
+
+          </button>
+
+        {% endif %}
+
+      </div>
+
+    {% endunless %}
+
+  </div>
+
+  
+
+  {%- comment -%} Product Info {%- endcomment -%}
+
+  <div class="product-card__info">
+
+    
+
+    {%- comment -%} Vendor/Brand {%- endcomment -%}
+
+    {% if show_vendor and product.vendor != blank %}
+
+      <p class="product-card__vendor">
+
+        <a href="{{ product.vendor | url_for_vendor }}" class="link link--subtle">
+
+          {{ product.vendor }}
+
+        </a>
+
+      </p>
+
+    {% endif %}
+
+    
+
+    {%- comment -%} Title {%- endcomment -%}
+
+    <h3 class="product-card__title">
+
+      <a href="{{ product.url }}" class="product-card__title-link">
+
+        {{ product.title | escape }}
+
+      </a>
+
+    </h3>
+
+    
+
+    {%- comment -%} Rating (if available via metafield or app) {%- endcomment -%}
+
+    {% if product.metafields.reviews.rating.value %}
+
+    <div class="product-card__rating">
+
+    {% render 'product_rating', rating: product.metafields.reviews.rating.value %}
+  </div>
+
+{% endif %}
+
+    {%- comment -%} Price {%- endcomment -%}
+
+    <div class="product-card__price">
+
+      {% if on_sale %}
+
+        <div class="price price--on-sale">
+
+          <span class="price__sale">
+
+            <span class="visually-hidden">Sale price</span>
+
+            {{ product.price | money }}
+
+          </span>
+
+          <span class="price__compare">
+
+            <span class="visually-hidden">Regular price</span>
+
+            <s>{{ product.compare_at_price | money }}</s>
+
+          </span>
+
+        </div>
+
+        <p class="price__savings">
+
+          Save {{ savings | money }} ({{ savings_percent }}%)
+
+        </p>
+
+      {% else %}
+
+        <span class="price">
+
+          <span class="visually-hidden">Price</span>
+
+          {{ product.price | money }}
+
+        </span>
+
+      {% endif %}
+
+    </div>
+
+    
+
+    {%- comment -%} Color Swatches (if product has color variants) {%- endcomment -%}
+
+    {% if has_variants %}
+
+      {% for option in product.options_with_values %}
+
+        {% assign option_name_downcase = option.name | downcase %}
+
+        {% if option_name_downcase contains 'color' or option_name_downcase contains 'colour' %}
+
+          <div class="product-card__swatches">
+
+            <div class="swatches">
+
+              {% for value in option.values limit: 5 %}
+
+                {% assign swatch_color = value | handle %}
+
+                <button
+
+                  type="button"
+
+                  class="swatch swatch--color"
+
+                  data-swatch="{{ value | escape }}"
+
+                  aria-label="{{ value | escape }}"
+
+                  title="{{ value | escape }}"
+
+                  style="--swatch-color: var(--color-{{ swatch_color }}, {{ value | escape }})"
+
+                >
+
+                  <span class="visually-hidden">{{ value }}</span>
+
+                </button>
+
+              {% endfor %}
+
+              {% if option.values.size > 5 %}
+
+                <span class="swatches__more">{{ option.values.size | minus: 5 }}</span>
+
+              {% endif %}
+
+            </div>
+
+          </div>
+
+        {% endif %}
+
+      {% endfor %}
+
+    {% endif %}
+
+  </div>
+
+</article>
+
+
+
+<style>
+
+/* Product Card Styles - Include in main theme.css.liquid */
+
+
+
+.product-card {
+
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  height: 100%;
+
+  background: var(--color-white);
+
+  border-radius: var(--radius-lg);
+
+  overflow: hidden;
+
+  transition: transform var(--duration-base) var(--ease-out),
+
+              box-shadow var(--duration-base) var(--ease-out);
+
+}
+
+
+
+.product-card:hover {
+
+  transform: translateY(-4px);
+
+  box-shadow: var(--shadow-lg);
+
+}
+
+
+
+/* Badges */
+
+.product-card__badges {
+
+  position: absolute;
+
+  top: var(--space-md);
+
+  left: var(--space-md);
+
+  z-index: 2;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: var(--space-xs);
+
+}
+
+
+
+.badge {
+
+  display: inline-block;
+
+  padding: var(--space-xs) var(--space-sm);
+
+  font-size: var(--font-size-xs);
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.05em;
+
+  border-radius: var(--radius-sm);
+
+}
+
+
+
+.badge--sale {
+
+  background: var(--color-yellow);
+
+  color: var(--color-black);
+
+}
+
+
+
+.badge--new {
+
+  background: var(--color-black);
+
+  color: var(--color-white);
+
+}
+
+
+
+.badge--sold-out {
+
+  background: var(--color-gray-600);
+
+  color: var(--color-white);
+
+}
+
+
+
+/* Image Container */
+
+.product-card__image-wrapper {
+
+  position: relative;
+
+  aspect-ratio: 1;
+
+  overflow: hidden;
+
+  background: var(--color-gray-50);
+
+}
+
+
+
+.product-card__image-link {
+
+  display: block;
+
+  width: 100%;
+
+  height: 100%;
+
+}
+
+
+
+.product-card__image {
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+
+  transition: opacity var(--duration-base) var(--ease-out),
+
+              transform var(--duration-slow) var(--ease-out);
+
+}
+
+
+
+.product-card__image--secondary {
+
+  position: absolute;
+
+  top: 0;
+
+  left: 0;
+
+  opacity: 0;
+
+}
+
+
+
+.product-card:hover .product-card__image--primary {
+
+  transform: scale(1.05);
+
+}
+
+
+
+.product-card:hover .product-card__image--secondary {
+
+  opacity: 1;
+
+}
+
+
+
+/* Quick Actions */
+
+.product-card__actions {
+
+  position: absolute;
+
+  top: var(--space-md);
+
+  right: var(--space-md);
+
+  z-index: 2;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: var(--space-xs);
+
+  opacity: 0;
+
+  transform: translateX(10px);
+
+  transition: opacity var(--duration-base) var(--ease-out),
+
+              transform var(--duration-base) var(--ease-out);
+
+}
+
+
+
+.product-card:hover .product-card__actions {
+
+  opacity: 1;
+
+  transform: translateX(0);
+
+}
+
+
+
+.product-card__action-btn {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 40px;
+
+  height: 40px;
+
+  background: var(--color-white);
+
+  border: none;
+
+  border-radius: var(--radius-full);
+
+  cursor: pointer;
+
+  transition: all var(--duration-fast) var(--ease-out);
+
+  box-shadow: var(--shadow-md);
+
+}
+
+
+
+.product-card__action-btn:hover {
+
+  background: var(--color-yellow);
+
+  transform: scale(1.1);
+
+}
+
+
+
+.product-card__action-btn:focus-visible {
+
+  outline: 2px solid var(--color-yellow);
+
+  outline-offset: 2px;
+
+}
+
+
+
+.product-card__wishlist.is-active {
+
+  background: var(--color-yellow);
+
+}
+
+
+
+.product-card__wishlist.is-active .icon--heart {
+
+  fill: var(--color-black);
+
+}
+
+
+
+/* Quick Add */
+
+.product-card__quick-add {
+
+  position: absolute;
+
+  bottom: 0;
+
+  left: 0;
+
+  right: 0;
+
+  padding: var(--space-md);
+
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+
+  opacity: 0;
+
+  transform: translateY(10px);
+
+  transition: opacity var(--duration-base) var(--ease-out),
+
+              transform var(--duration-base) var(--ease-out);
+
+}
+
+
+
+.product-card:hover .product-card__quick-add {
+
+  opacity: 1;
+
+  transform: translateY(0);
+
+}
+
+
+
+/* Product Info */
+
+.product-card__info {
+
+  padding: var(--space-md);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: var(--space-xs);
+
+  flex-grow: 1;
+
+}
+
+
+
+.product-card__vendor {
+
+  margin: 0;
+
+  font-size: var(--font-size-xs);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.05em;
+
+  color: var(--color-gray-600);
+
+}
+
+
+
+.product-card__title {
+
+  margin: 0;
+
+  font-size: var(--font-size-base);
+
+  font-weight: 600;
+
+  line-height: 1.4;
+
+}
+
+
+
+.product-card__title-link {
+
+  color: var(--color-black);
+
+  text-decoration: none;
+
+  transition: color var(--duration-fast) var(--ease-out);
+
+}
+
+
+
+.product-card__title-link:hover {
+
+  color: var(--color-gray-600);
+
+}
+
+
+
+/* Price */
+
+.product-card__price {
+
+  margin-top: auto;
+
+}
+
+
+
+.price {
+
+  font-size: var(--font-size-lg);
+
+  font-weight: 700;
+
+  color: var(--color-black);
+
+}
+
+
+
+.price--on-sale {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: var(--space-sm);
+
+}
+
+
+
+.price__sale {
+
+  color: var(--color-yellow-dark);
+
+}
+
+
+
+.price__compare {
+
+  font-size: var(--font-size-base);
+
+  font-weight: 400;
+
+  color: var(--color-gray-600);
+
+}
+
+
+
+.price__savings {
+
+  margin: var(--space-xs) 0 0;
+
+  font-size: var(--font-size-xs);
+
+  color: var(--color-yellow-dark);
+
+  font-weight: 600;
+
+}
+
+
+
+/* Swatches */
+
+.product-card__swatches {
+
+  margin-top: var(--space-sm);
+
+}
+
+
+
+.swatches {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: var(--space-xs);
+
+  flex-wrap: wrap;
+
+}
+
+
+
+.swatch {
+
+  width: 24px;
+
+  height: 24px;
+
+  border: 2px solid var(--color-gray-200);
+
+  border-radius: var(--radius-full);
+
+  cursor: pointer;
+
+  transition: all var(--duration-fast) var(--ease-out);
+
+  padding: 0;
+
+  background: var(--swatch-color, var(--color-gray-200));
+
+}
+
+
+
+.swatch:hover {
+
+  transform: scale(1.15);
+
+  border-color: var(--color-black);
+
+}
+
+
+
+.swatch:focus-visible {
+
+  outline: 2px solid var(--color-yellow);
+
+  outline-offset: 2px;
+
+}
+
+
+
+.swatches__more {
+
+  font-size: var(--font-size-xs);
+
+  color: var(--color-gray-600);
+
+}
+
+
+
+/* Responsive */
+
+@media (max-width: 768px) {
+
+  .product-card__actions {
+
+    opacity: 1;
+
+    transform: translateX(0);
+
+  }
+
+  
+
+  .product-card__quick-add {
+
+    opacity: 1;
+
+    transform: translateY(0);
+
+  }
+
+}
+
+</style>
