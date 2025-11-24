@@ -92,17 +92,12 @@
 
   <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
 
-<!-- Removed preconnects to external Google Fonts domains -->
+  {%- comment -%} Preload critical assets for performance {%- endcomment -%}
+  <link rel="preload" href="{{ 'theme.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'theme.js' | asset_url }}" as="script">
 
-{%- comment -%} Fonts are now hosted on Shopify CDN - see theme.css.liquid for @font-face declarations {%- endcomment -%}
-
-{{ 'theme.css' | asset_url | stylesheet_tag }}
-
-  
-
-  {%- comment -%} Fonts are now hosted on Shopify CDN - see theme.css.liquid for @font-face declarations {%- endcomment -%}
-
-{{ 'theme.css' | asset_url | stylesheet_tag }}
+  {%- comment -%} Main stylesheet - Fonts are hosted on Shopify CDN {%- endcomment -%}
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
 
 
 
@@ -164,9 +159,10 @@
 
   
 
+  {%- comment -%} Skip to content link for keyboard navigation accessibility {%- endcomment -%}
   <a class="skip-to-content-link" href="#MainContent">
 
-    {{ 'accessibility.skip_to_text' }}
+    {{ 'accessibility.skip_to_text' | t }}
 
   </a>
 

@@ -1,0 +1,36 @@
+{% comment %}
+  Component: SEO Schema - Website
+  Purpose: Generates JSON-LD structured data for website and search functionality
+  Dependencies: None
+  Usage: {% render 'seo-schema-website' %}
+  
+  Parameters: None (uses shop object)
+  
+  SEO Benefits:
+  - Enables sitelinks search box in Google
+  - Improves site-wide search visibility
+  - Supports voice search queries
+  - Enhances brand presence in SERPs
+  
+  Maintenance Notes:
+  - Ensure search functionality works correctly
+  - Test search box appearance in Google Search Console
+  - Monitor search analytics
+{% endcomment %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ shop.name | json }},
+  "url": {{ shop.url | json }},
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": {{ shop.url | append: '/search?q={search_term_string}' | json }}
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
