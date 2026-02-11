@@ -1,927 +1,590 @@
-{% paginate collection.products by 24 %}
-
-
-
-<div class="collection-template">
-
-  
-
-  {% comment %} Breadcrumbs {% endcomment %}
-
-  <div class="container">
-
-    <nav class="breadcrumbs" aria-label="Breadcrumb">
-
-      <ol class="breadcrumbs-list">
-
-        <li><a href="{{ routes.root_url }}">Home</a></li>
-
-        <li><a href="{{ routes.collections_url }}">Collections</a></li>
-
-        <li aria-current="page">{{ collection.title }}</li>
-
-      </ol>
-
-    </nav>
-
-  </div>
-
-
-
-  {% comment %} Collection Header {% endcomment %}
-
-  <div class="collection-header">
-
-    <div class="container">
-
-      {% if collection.image %}
-
-        <div class="collection-banner">
-
-          <img
-  src="{{ collection.image | image_url: width: 1600 }}"
-  srcset="
-    {{ collection.image | image_url: width: 800 }} 800w,
-    {{ collection.image | image_url: width: 1200 }} 1200w,
-    {{ collection.image | image_url: width: 1600 }} 1600w
-  "
-  sizes="100vw"
-  alt="{{ collection.title }}"
-  width="1600"
-  height="900"  
-  loading="eager"
->
-
-          <div class="collection-banner-overlay"></div>
-
-        </div>
-
-      {% endif %}
-
-
-
-      <div class="collection-header-content">
-
-        <h1 class="collection-title">{{ collection.title }}</h1>
-
-        {% if collection.description != blank %}
-
-          <div class="collection-description">
-
-            {{ collection.description }}
-
-          </div>
-
-        {% endif %}
-
-        <p class="collection-count">{{ collection.products_count }} products</p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  {% comment %} Collection Main {% endcomment %}
-
-  <div class="container">
-
-    <div class="collection-layout">
-
-      
-
-      {% comment %} Filters Sidebar {% endcomment %}
-
-      <aside class="collection-sidebar">
-
-        {% section 'product_filters' %}
-
-      </aside>
-
-
-
-      {% comment %} Products Grid {% endcomment %}
-
-      <div class="collection-main">
-
-        
-
-        {% comment %} Toolbar {% endcomment %}
-
-        <div class="collection-toolbar">
-
-          <button class="btn btn-secondary filters-toggle" data-filters-toggle>
-
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-
-              <path d="M2.5 5.83333H17.5M5 10H15M7.5 14.1667H12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-
-            </svg>
-
-            Filters
-
-          </button>
-
-
-
-          <div class="collection-view-toggle">
-
-            <button class="view-btn view-btn-grid is-active" data-view="grid" aria-label="Grid view">
-
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-
-                <rect x="2" y="2" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-
-                <rect x="11" y="2" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-
-                <rect x="2" y="11" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-
-                <rect x="11" y="11" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-
-              </svg>
-
-            </button>
-
-            <button class="view-btn view-btn-list" data-view="list" aria-label="List view">
-
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-
-                <rect x="2" y="3" width="16" height="3" stroke="currentColor" stroke-width="2"/>
-
-                <rect x="2" y="8.5" width="16" height="3" stroke="currentColor" stroke-width="2"/>
-
-                <rect x="2" y="14" width="16" height="3" stroke="currentColor" stroke-width="2"/>
-
-              </svg>
-
-            </button>
-
-          </div>
-
-
-
-          <select class="collection-sort" data-sort-select>
-
-            <option value="manual">Featured</option>
-
-            <option value="best-selling">Best Selling</option>
-
-            <option value="title-ascending">A-Z</option>
-
-            <option value="title-descending">Z-A</option>
-
-            <option value="price-ascending">Price: Low to High</option>
-
-            <option value="price-descending">Price: High to Low</option>
-
-            <option value="created-descending">Newest</option>
-
-          </select>
-
-        </div>
-
-
-
-        {% if collection.products.size > 0 %}
-
-          <div class="collection-grid" data-collection-grid data-view="grid">
-
-            {% for product in collection.products %}
-
-              <div class="collection-grid-item animate-on-scroll">
-
-                {% render 'product_card', product: product, show_vendor: true %}
-
-              </div>
-
-            {% endfor %}
-
-          </div>
-
-
-
-          {% comment %} Pagination {% endcomment %}
-
-          {% paginate collection.products by 12 %}
-          {% section 'products' %}
-  
-  <div class="collection-pagination">
-    {% if paginate.previous %}
-      <a href="{{ paginate.previous.url }}" class="pagination-btn pagination-prev">
-        <!-- SVG and text -->
-        Previous
-      </a>
-    {% endif %}
-
-    <div class="pagination-numbers">
-      {% for part in paginate.parts %}
-        {% if part.is_link %}
-          <a href="{{ part.url }}" class="pagination-number">{{ part.title }}</a>
-        {% else %}
-          <span class="pagination-number is-active">{{ part.title }}</span>
-        {% endif %}
-      {% endfor %}
-    </div>
-
-    {% if paginate.next %}
-      <a href="{{ paginate.next.url }}" class="pagination-btn pagination-next">
-        Next
-        <!-- SVG -->
-      </a>
-    {% endif %}
-  </div>
-{% endpaginate %}
-
-
-
-        {% else %}
-
-          <div class="collection-empty">
-
-            <svg class="empty-icon" width="80" height="80" viewBox="0 0 80 80" fill="none">
-
-              <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="2"/>
-
-              <path d="M40 25V45M40 55V55.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-
-            </svg>
-
-            <h3>No products found</h3>
-
-            <p>This collection is empty or your filters returned no results.</p>
-
-            <a href="{{ routes.collections_url }}" class="btn btn-primary">
-
-              View All Collections
-
-            </a>
-
-          </div>
-
-        {% endif %}
-
-
-
-      </div>
-
-
-
-    </div>
-
-  </div>
-
-
-
+{% comment %} Breadcrumbs {% endcomment %}
+<div class="container">
+  <nav class="breadcrumbs" aria-label="{{ 'general.breadcrumbs.aria_label' | t | default: 'Breadcrumb' }}">
+    <ol class="breadcrumbs-list">
+      <li><a href="{{ routes.root_url }}">{{ 'general.breadcrumbs.home' | t }}</a></li>
+      <li><a href="{{ routes.collections_url }}">{{ 'collections.general.title' | t }}</a></li>
+      <li aria-current="page">{{ collection.title }}</li>
+    </ol>
+  </nav>
 </div>
 
+{% comment %} Collection Header {% endcomment %}
+<div class="collection-header">
+  <div class="container">
+    {% if collection.image %}
+      <div class="collection-banner">
+        <img
+          src="{{ collection.image | image_url: width: 1600 }}"
+          srcset="
+            {{ collection.image | image_url: width: 800 }} 800w,
+            {{ collection.image | image_url: width: 1200 }} 1200w,
+            {{ collection.image | image_url: width: 1600 }} 1600w
+          "
+          sizes="100vw"
+          alt="{{ collection.title | escape }}"
+          width="1600"
+          height="900"  
+          loading="eager"
+        >
+        <div class="collection-banner-overlay"></div>
+      </div>
+    {% endif %}
 
+    <div class="collection-header-content">
+      <h1 class="collection-title">{{ collection.title }}</h1>
+      {% if collection.description != blank %}
+        <div class="collection-description">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+      <p class="collection-count">
+        {{ 'collections.general.products_count' | t: count: collection.products_count | default: collection.products_count }}
+        {{ 'collections.general.products' | t | default: 'products' }}
+      </p>
+    </div>
+  </div>
+</div>
 
-{% endpaginate %}
+{% comment %} Collection Main {% endcomment %}
+<div class="container">
+  <div class="collection-layout">
+    
+    {% comment %} Filters Sidebar {% endcomment %}
+    <aside class="collection-sidebar">
+      {% render 'product-filters' %}
+    </aside>
 
+    {% comment %} Products Grid {% endcomment %}
+    <div class="collection-main">
+      
+      {% comment %} Toolbar {% endcomment %}
+      <div class="collection-toolbar">
+        <button class="btn btn-secondary filters-toggle" data-filters-toggle>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M2.5 5.83333H17.5M5 10H15M7.5 14.1667H12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          {{ 'collections.filters.title' | t }}
+        </button>
 
+        <div class="collection-view-toggle">
+          <button class="view-btn view-btn-grid is-active" data-view="grid" aria-label="{{ 'collections.view.grid' | t | default: 'Grid view' }}">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="2" y="2" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+              <rect x="11" y="2" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+              <rect x="2" y="11" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+              <rect x="11" y="11" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+          <button class="view-btn view-btn-list" data-view="list" aria-label="{{ 'collections.view.list' | t | default: 'List view' }}">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="2" y="3" width="16" height="3" stroke="currentColor" stroke-width="2"/>
+              <rect x="2" y="8.5" width="16" height="3" stroke="currentColor" stroke-width="2"/>
+              <rect x="2" y="14" width="16" height="3" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+        </div>
+
+        <select class="collection-sort" data-sort-select aria-label="{{ 'collections.sorting.title' | t }}">
+          <option value="manual">{{ 'collections.sorting.featured' | t }}</option>
+          <option value="best-selling">{{ 'collections.sorting.best_selling' | t }}</option>
+          <option value="title-ascending">{{ 'collections.sorting.az' | t }}</option>
+          <option value="title-descending">{{ 'collections.sorting.za' | t }}</option>
+          <option value="price-ascending">{{ 'collections.sorting.price_ascending' | t }}</option>
+          <option value="price-descending">{{ 'collections.sorting.price_descending' | t }}</option>
+          <option value="created-descending">{{ 'collections.sorting.date_descending' | t }}</option>
+        </select>
+      </div>
+
+      {% comment %} Products with Pagination - Fixed Structure {% endcomment %}
+      {% paginate collection.products by 24 %}
+        {% if collection.products.size > 0 %}
+          <div class="collection-grid" data-collection-grid data-view="grid">
+            {% for product in collection.products %}
+              <div class="collection-grid-item animate-on-scroll">
+                {% render 'product-card', product: product, show_vendor: true, show_quick_view: true %}
+              </div>
+            {% endfor %}
+          </div>
+
+          {% comment %} Pagination Controls {% endcomment %}
+          {% if paginate.pages > 1 %}
+            <nav class="collection-pagination" aria-label="{{ 'collections.paginate.pagination' | t | default: 'Pagination' }}">
+              {% if paginate.previous %}
+                <a href="{{ paginate.previous.url }}" class="pagination-btn pagination-prev">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ 'collections.paginate.previous' | t | default: 'Previous' }}
+                </a>
+              {% endif %}
+
+              <div class="pagination-numbers">
+                {% for part in paginate.parts %}
+                  {% if part.is_link %}
+                    <a href="{{ part.url }}" class="pagination-number" aria-label="{{ 'collections.paginate.page' | t | default: 'Page' }} {{ part.title }}">
+                      {{ part.title }}
+                    </a>
+                  {% else %}
+                    <span class="pagination-number is-active" aria-current="page" aria-label="{{ 'collections.paginate.current_page' | t | default: 'Current page' }} {{ part.title }}">
+                      {{ part.title }}
+                    </span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+
+              {% if paginate.next %}
+                <a href="{{ paginate.next.url }}" class="pagination-btn pagination-next">
+                  {{ 'collections.paginate.next' | t | default: 'Next' }}
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+              {% endif %}
+            </nav>
+          {% endif %}
+
+        {% else %}
+          <div class="collection-empty">
+            <svg class="empty-icon" width="80" height="80" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+              <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="2"/>
+              <path d="M40 25V45M40 55V55.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <h3>{{ 'collections.general.no_matches' | t }}</h3>
+            <p>{{ 'collections.general.no_matches_description' | t | default: 'This collection is empty or your filters returned no results.' }}</p>
+            <a href="{{ routes.collections_url }}" class="btn btn-primary">
+              {{ 'collections.general.all_collections' | t }}
+            </a>
+          </div>
+        {% endif %}
+      {% endpaginate %}
+
+    </div>
+
+  </div>
+</div>
+
+{% comment %} SEO Schema {% endcomment %}
+{% render 'seo-schema-breadcrumbs', collection: collection %}
 
 <style>
-
   .collection-template {
-
     padding: var(--space-3xl) 0;
-
   }
-
-
 
   .breadcrumbs {
-
     margin-bottom: var(--space-xl);
-
   }
-
-
 
   .breadcrumbs-list {
-
     display: flex;
-
     gap: var(--space-sm);
-
     list-style: none;
-
     font-size: var(--font-size-sm);
-
     color: var(--color-gray-600);
-
   }
-
-
 
   .breadcrumbs-list li:not(:last-child)::after {
-
     content: '/';
-
     margin-left: var(--space-sm);
-
   }
-
-
 
   .breadcrumbs-list a {
-
     color: inherit;
-
     text-decoration: none;
-
+    transition: color var(--duration-fast) var(--ease-out);
   }
-
-
 
   .breadcrumbs-list a:hover {
-
     color: var(--color-yellow);
-
   }
-
-
 
   .collection-header {
-
     position: relative;
-
     margin-bottom: var(--space-4xl);
-
   }
-
-
 
   .collection-banner {
-
     position: absolute;
-
     top: 0;
-
     left: 0;
-
     width: 100%;
-
     height: 100%;
-
     z-index: 1;
-
   }
-
-
 
   .collection-banner img {
-
     width: 100%;
-
     height: 100%;
-
     object-fit: cover;
-
   }
-
-
 
   .collection-banner-overlay {
-
     position: absolute;
-
     top: 0;
-
     left: 0;
-
     width: 100%;
-
     height: 100%;
-
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
-
   }
-
-
 
   .collection-header-content {
-
     position: relative;
-
     z-index: 2;
-
     text-align: center;
-
     padding: var(--space-4xl) 0;
-
     color: var(--color-white);
-
   }
-
-
 
   .collection-title {
-
     font-size: var(--font-size-5xl);
-
     font-weight: var(--font-weight-bold);
-
     margin-bottom: var(--space-md);
-
   }
-
-
 
   .collection-description {
-
     font-size: var(--font-size-lg);
-
     max-width: 600px;
-
     margin: 0 auto var(--space-md);
-
     opacity: 0.9;
-
   }
-
-
 
   .collection-count {
-
     font-size: var(--font-size-sm);
-
     font-weight: var(--font-weight-semibold);
-
     text-transform: uppercase;
-
     letter-spacing: 0.1em;
-
     opacity: 0.8;
-
   }
-
-
 
   .collection-layout {
-
     display: grid;
-
     grid-template-columns: 280px 1fr;
-
     gap: var(--space-3xl);
-
   }
-
-
 
   .collection-sidebar {
-
     position: sticky;
-
     top: 100px;
-
     height: fit-content;
-
   }
-
-
 
   .collection-main {
-
     min-width: 0;
-
   }
-
-
 
   .collection-toolbar {
-
     display: flex;
-
     align-items: center;
-
     gap: var(--space-lg);
-
     margin-bottom: var(--space-xl);
-
     padding: var(--space-lg);
-
     background: var(--color-gray-50);
-
     border-radius: var(--radius-lg);
-
   }
-
-
 
   .filters-toggle {
-
     display: none;
-
   }
-
-
 
   .collection-view-toggle {
-
     display: flex;
-
     gap: var(--space-xs);
-
     margin-left: auto;
-
   }
-
-
 
   .view-btn {
-
     padding: var(--space-sm);
-
     background: var(--color-white);
-
     border: 1px solid var(--color-gray-300);
-
     border-radius: var(--radius-md);
-
     cursor: pointer;
-
     color: var(--color-gray-600);
-
     transition: all var(--duration-base) var(--ease-out);
-
   }
-
-
 
   .view-btn:hover,
-
   .view-btn.is-active {
-
     background: var(--color-yellow);
-
     border-color: var(--color-yellow);
-
     color: var(--color-black);
-
   }
-
-
 
   .collection-sort {
-
     padding: var(--space-sm) var(--space-md);
-
     border: 1px solid var(--color-gray-300);
-
     border-radius: var(--radius-md);
-
     background: var(--color-white);
-
     font-size: var(--font-size-sm);
-
     cursor: pointer;
-
   }
-
-
 
   .collection-grid {
-
     display: grid;
-
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-
     gap: var(--space-xl);
-
     margin-bottom: var(--space-3xl);
-
   }
-
-
 
   .collection-grid[data-view="list"] {
-
     grid-template-columns: 1fr;
-
   }
-
-
 
   .collection-grid-item {
-
     opacity: 0;
-
     transform: translateY(20px);
-
     transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
-
   }
-
-
 
   .collection-grid-item.is-visible {
-
     opacity: 1;
-
     transform: translateY(0);
-
   }
-
-
 
   .collection-pagination {
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     gap: var(--space-md);
-
+    margin-top: var(--space-3xl);
   }
-
-
 
   .pagination-btn {
-
     display: flex;
-
     align-items: center;
-
     gap: var(--space-xs);
-
     padding: var(--space-sm) var(--space-lg);
-
     background: var(--color-white);
-
     border: 1px solid var(--color-gray-300);
-
     border-radius: var(--radius-md);
-
     font-weight: var(--font-weight-semibold);
-
     color: var(--color-gray-700);
-
     transition: all var(--duration-base) var(--ease-out);
-
+    text-decoration: none;
   }
-
-
 
   .pagination-btn:hover {
-
     background: var(--color-yellow);
-
     border-color: var(--color-yellow);
-
     color: var(--color-black);
-
   }
-
-
 
   .pagination-numbers {
-
     display: flex;
-
     gap: var(--space-xs);
-
   }
-
-
 
   .pagination-number {
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     width: 40px;
-
     height: 40px;
-
     border-radius: var(--radius-md);
-
     font-weight: var(--font-weight-semibold);
-
     color: var(--color-gray-700);
-
     transition: all var(--duration-base) var(--ease-out);
-
+    text-decoration: none;
   }
-
-
 
   .pagination-number:hover,
-
   .pagination-number.is-active {
-
     background: var(--color-yellow);
-
     color: var(--color-black);
-
   }
-
-
 
   .collection-empty {
-
     text-align: center;
-
     padding: var(--space-5xl) var(--space-xl);
-
   }
-
-
 
   .empty-icon {
-
     color: var(--color-gray-300);
-
     margin-bottom: var(--space-xl);
-
   }
-
-
 
   .collection-empty h3 {
-
     font-size: var(--font-size-2xl);
-
     font-weight: var(--font-weight-bold);
-
     color: var(--color-black);
-
     margin-bottom: var(--space-sm);
-
   }
-
-
 
   .collection-empty p {
-
     font-size: var(--font-size-lg);
-
     color: var(--color-gray-600);
-
     margin-bottom: var(--space-xl);
-
   }
-
-
 
   /* Responsive */
-
   @media (max-width: 1024px) {
-
     .collection-layout {
-
       grid-template-columns: 1fr;
-
     }
-
-
 
     .collection-sidebar {
-
       display: none;
-
     }
-
-
 
     .filters-toggle {
-
       display: flex;
-
     }
-
   }
-
-
 
   @media (max-width: 768px) {
-
     .collection-template {
-
       padding: var(--space-2xl) 0;
-
     }
-
-
 
     .collection-title {
-
       font-size: var(--font-size-3xl);
-
     }
-
-
 
     .collection-toolbar {
-
       flex-wrap: wrap;
-
     }
-
-
 
     .collection-sort {
-
       flex: 1;
-
       order: 3;
-
     }
-
-
 
     .collection-view-toggle {
-
       display: none;
-
     }
-
-
 
     .collection-grid {
-
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-
       gap: var(--space-lg);
-
     }
 
-  }
+    .pagination-btn {
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--font-size-sm);
+    }
 
+    .pagination-numbers {
+      flex-wrap: wrap;
+    }
+  }
 </style>
 
-
-
 <script>
-
   document.addEventListener('DOMContentLoaded', function() {
-
-    // View toggle
-
-    const viewBtns = document.querySelectorAll('.view-btn');
-
-    const collectionGrid = document.querySelector('[data-collection-grid]');
-
-    
-
-    viewBtns.forEach(btn => {
-
-      btn.addEventListener('click', () => {
-
-        const view = btn.dataset.view;
-
-        viewBtns.forEach(b => b.classList.remove('is-active'));
-
-        btn.classList.add('is-active');
-
-        if (collectionGrid) {
-
-          collectionGrid.dataset.view = view;
-
-        }
-
+    try {
+      // Enhanced view toggle with error handling
+      const viewBtns = document.querySelectorAll('.view-btn');
+      const collectionGrid = document.querySelector('[data-collection-grid]');
+      
+      viewBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          try {
+            const view = btn.dataset.view;
+            viewBtns.forEach(b => b.classList.remove('is-active'));
+            btn.classList.add('is-active');
+            
+            if (collectionGrid) {
+              collectionGrid.dataset.view = view;
+              
+              // Announce view change to screen readers
+              if (window.A11yHelpers) {
+                window.A11yHelpers.announce(`View changed to ${view}`);
+              }
+            }
+          } catch (error) {
+            console.error('Error changing view:', error);
+          }
+        });
       });
 
-    });
+      // Enhanced sort functionality
+      const sortSelect = document.querySelector('[data-sort-select]');
+      if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+          try {
+            const sortValue = this.value;
+            const url = new URL(window.location);
+            url.searchParams.set('sort_by', sortValue);
+            window.location.href = url.toString();
+          } catch (error) {
+            console.error('Error applying sort:', error);
+          }
+        });
 
-
-
-    // Animate products on scroll
-
-    const productItems = document.querySelectorAll('.collection-grid-item');
-
-    const observer = new IntersectionObserver((entries) => {
-
-      entries.forEach((entry, index) => {
-
-        if (entry.isIntersecting) {
-
-          setTimeout(() => {
-
-            entry.target.classList.add('is-visible');
-
-          }, index * 50);
-
-          observer.unobserve(entry.target);
-
+        // Set current sort value
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentSort = urlParams.get('sort_by');
+        if (currentSort) {
+          sortSelect.value = currentSort;
         }
+      }
 
+      // Enhanced filters toggle
+      const filtersToggle = document.querySelector('[data-filters-toggle]');
+      const sidebar = document.querySelector('.collection-sidebar');
+      
+      if (filtersToggle && sidebar) {
+        filtersToggle.addEventListener('click', function() {
+          try {
+            sidebar.classList.toggle('is-open');
+            document.body.classList.toggle('filters-open');
+            
+            const isOpen = sidebar.classList.contains('is-open');
+            this.setAttribute('aria-expanded', isOpen);
+            
+            if (isOpen) {
+              // Focus first filter element
+              const firstFilter = sidebar.querySelector('input, select, button');
+              if (firstFilter) {
+                setTimeout(() => firstFilter.focus(), 300);
+              }
+            }
+          } catch (error) {
+            console.error('Error toggling filters:', error);
+          }
+        });
+      }
+
+      // Animate products on scroll with error handling
+      const productItems = document.querySelectorAll('.collection-grid-item');
+      
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                entry.target.classList.add('is-visible');
+              }, index * 50);
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+
+        productItems.forEach(item => observer.observe(item));
+      } else {
+        // Fallback for browsers without IntersectionObserver
+        productItems.forEach(item => item.classList.add('is-visible'));
+      }
+
+      // Enhanced keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          const sidebar = document.querySelector('.collection-sidebar.is-open');
+          if (sidebar) {
+            sidebar.classList.remove('is-open');
+            document.body.classList.remove('filters-open');
+            
+            const filtersToggle = document.querySelector('[data-filters-toggle]');
+            if (filtersToggle) {
+              filtersToggle.setAttribute('aria-expanded', 'false');
+              filtersToggle.focus();
+            }
+          }
+        }
       });
 
-    }, { threshold: 0.1 });
-
-
-
-    productItems.forEach(item => observer.observe(item));
-
+    } catch (error) {
+      console.error('Collection template initialization error:', error);
+    }
   });
-
 </script>
