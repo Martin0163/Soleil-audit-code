@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "accessibility": {
@@ -6,7 +15,8 @@
       "close": "Close",
       "previous": "Previous",
       "next": "Next",
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "instructions": "Type to search products, collections, and pages"
     },
     "meta": {
       "tags": "Tagged \"{{ tags }}\"",
@@ -15,9 +25,15 @@
     "404": {
       "title": "404 Page Not Found",
       "subtext": "The page you requested does not exist."
-  
     },
-    "search": "Search",  // <-- NEW KEY ADDED HERE (but this duplicates the object above; resolve if needed)
+    "search": {
+      "title": "Search",
+      "placeholder": "Search products...",
+      "submit": "Search",
+      "results": "Search results",
+      "no_results": "No results found",
+      "instructions": "Type to search products, collections, and pages"
+    },
     "newsletter": {
       "email": "Email",
       "label": "Email",
@@ -372,5 +388,10 @@
   },
   "date_formats": {
     "month_day_year": "%B %d, %Y"
+  },
+  "carousel": {
+    "previous": "Previous slide",
+    "next": "Next slide",
+    "pause": "Pause autoplay"
   }
 }

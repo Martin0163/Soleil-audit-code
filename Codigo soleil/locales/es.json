@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "404": {
@@ -10,13 +19,21 @@
       "close": "Cerrar",
       "previous": "Anterior",
       "next": "Siguiente",
-      "loading": "Cargando..."
+      "loading": "Cargando...",
+      "instructions": "Escribe para buscar productos, colecciones y páginas"
     },
     "meta": {
       "tags": "Etiquetado \"{{ tags }}\"",
       "page": "Página {{ page }}"
     },
-    "search": "Buscar",
+    "search": {
+      "title": "Buscar",
+      "placeholder": "Buscar productos...",
+      "submit": "Buscar",
+      "results": "Resultados de búsqueda",
+      "no_results": "No se encontraron resultados",
+      "instructions": "Escribe para buscar productos, colecciones y páginas"
+    },
     "newsletter": {
       "email": "Correo electrónico",
       "label": "Correo electrónico",
@@ -48,6 +65,8 @@
       "sold_out": "Agotado"
     },
     "product": {
+      "save": "Guardar",
+      "unit_price": "Precio unitario",
       "add_to_cart": "Agregar al Carrito",
       "sold_out": "Agotado",
       "unavailable": "No disponible",
@@ -81,9 +100,7 @@
       "will_be_in_stock_after": "Estará en stock después de {{ date }}",
       "waiting_for_stock": "Inventario en camino",
       "size_guide": "Guía de Tallas",
-      "product_variants": "Variantes del producto",
-      "save": "TODO",
-      "unit_price": "TODO"
+      "product_variants": "Variantes del producto"
     },
     "reviews": {
       "title": "Reseñas de Clientes",
@@ -94,6 +111,10 @@
   "cart": {
     "general": {
       "title": "Tu Carrito",
+      "close": "Cerrar",
+      "decrease_quantity": "Disminuir cantidad",
+      "quantity": "Cantidad",
+      "increase_quantity": "Aumentar cantidad",
       "empty": "Tu carrito está actualmente vacío.",
       "continue_shopping": "Continuar Comprando",
       "update": "Actualizar Carrito",
@@ -112,11 +133,7 @@
       "items_count": {
         "one": "{{ count }} artículo",
         "other": "{{ count }} artículos"
-      },
-      "close": "TODO",
-      "decrease_quantity": "TODO",
-      "quantity": "TODO",
-      "increase_quantity": "TODO"
+      }
     },
     "label": {
       "product": "Producto",
@@ -353,11 +370,11 @@
   },
   "gift_cards": {
     "issued": {
-      "expiration_date": "fecha de vencimiento: {{ expires_on }}",
-      "how_to_use_gift_card": "Como usar tu tarjeta de regalo",
-      "qr_image_alt": "Imagen de codigo QR",
-      "copy_code_success": "codigo copiado al portapapeles!",
-      "copy_code": "Copiar codigo",
+      "expiration_date": "Fecha de vencimiento: {{ expires_on }}",
+      "how_to_use_gift_card": "Cómo usar tu tarjeta de regalo",
+      "qr_image_alt": "Imagen de código QR",
+      "copy_code_success": "¡Código copiado al portapapeles!",
+      "copy_code": "Copiar código",
       "title": "¡Aquí está tu tarjeta de regalo de {{ value }} para {{ shop }}!",
       "subtext": "Tu tarjeta de regalo",
       "disabled": "Deshabilitada",
@@ -371,5 +388,10 @@
   },
   "date_formats": {
     "month_day_year": "%B %d, %Y"
+  },
+  "carousel": {
+    "previous": "Diapositiva anterior",
+    "next": "Diapositiva siguiente",
+    "pause": "Pausar reproducción automática"
   }
 }
