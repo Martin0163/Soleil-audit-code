@@ -1,7 +1,27 @@
+{% comment %} Announcement Bar {% endcomment %}
 {% if section.settings.show_announcement %}
-  <div class="announcement-bar">
+  <div class="announcement-bar" data-announcement-bar>
     <div class="container">
-      {{ section.settings.announcement_text }}
+      <div class="announcement-content">
+        {% if section.settings.announcement_icon %}
+          <div class="announcement-icon">
+            {{ section.settings.announcement_icon }}
+          </div>
+        {% endif %}
+        <span class="announcement-text">{{ section.settings.announcement_text }}</span>
+        {% if section.settings.announcement_link %}
+          <a href="{{ section.settings.announcement_link }}" class="announcement-link">
+            {{ section.settings.announcement_link_text | default: 'Learn More' }}
+          </a>
+        {% endif %}
+      </div>
+      {% if section.settings.announcement_dismissible %}
+        <button class="announcement-close" data-announcement-close aria-label="{{ 'general.accessibility.close' | t }}">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      {% endif %}
     </div>
   </div>
 {% endif %}
@@ -10,7 +30,7 @@
   <div class="header-inner">
     <!-- Logo -->
     <div class="site-logo">
-      <a href="{{ routes.root_url }}" aria-label="Go to {{ shop.name }} homepage">
+      <a href="{{ routes.root_url }}" aria-label="{{ 'general.accessibility.go_to_homepage' | t | default: 'Go to homepage' }}: {{ shop.name }}">
         {% if section.settings.logo %}
           <img 
             src="{{ section.settings.logo | image_url: width: 300 }}" 
@@ -36,7 +56,7 @@
       id="mobile-menu-toggle"
       aria-expanded="false" 
       aria-controls="main-navigation"
-      aria-label="Toggle navigation menu"
+      aria-label="{{ 'layout.navigation.menu' | t }}"
     >
       <span></span>
       <span></span>
@@ -44,32 +64,40 @@
     </button>
 
     <!-- Main Navigation -->
-    <nav class="main-nav" id="main-navigation" role="navigation" aria-label="Main navigation">
+    <nav class="main-nav" id="main-navigation" role="navigation" aria-label="{{ 'general.accessibility.main_navigation' | t | default: 'Main navigation' }}">
       <ul class="nav-links" role="menubar">
         {% unless template.name == 'index' %}
           <li class="nav-item" role="none">
-            <a href="{{ routes.root_url }}" class="nav-link" role="menuitem">{{ section.settings.nav_home_text | default: 'Home' }}</a>
+            <a href="{{ routes.root_url }}" class="nav-link" role="menuitem">
+              {{ section.settings.nav_home_text | default: 'Inicio' }}
+            </a>
           </li>
         {% endunless %}
+        
         {% unless template.name == 'collection' or template.name == 'product' %}
           <li class="nav-item" role="none">
-            <a href="{{ routes.all_products_collection_url }}" class="nav-link" role="menuitem">{{ section.settings.nav_products_text | default: 'Products' }}</a>
+            <a href="{{ routes.all_products_collection_url }}" class="nav-link" role="menuitem">
+              {{ section.settings.nav_products_text | default: 'Productos' }}
+            </a>
           </li>
         {% endunless %}
-        {% unless request.path contains '/collections/brands' or request.path contains '/pages/brands' %}
-          <li class="nav-item" role="none">
-            <a href="{{ section.settings.brands_url | default: 'https://soleilbeauty.com.mx/pages/brands' }}" class="nav-link" role="menuitem">{{ section.settings.nav_brands_text | default: 'Brands' }}</a>
-          </li>
-        {% endunless %}
+        
         {% if section.settings.main_menu != blank %}
           {% assign main_menu = linklists[section.settings.main_menu] %}
           {% for link in main_menu.links %}
-            <li class="nav-item" role="none">
-              <a href="{{ link.url }}" class="nav-link" role="menuitem">{{ link.title }}</a>
+            <li class="nav-item{% if link.links != blank %} has-dropdown{% endif %}" role="none">
+              <a href="{{ link.url }}" class="nav-link" role="menuitem"
+                 {% if link.links != blank %}aria-expanded="false" aria-haspopup="true"{% endif %}>
+                {{ link.title }}
+              </a>
               {% if link.links != blank %}
-                <ul class="nav-dropdown" role="menu" aria-label="{{ link.title }} submenu">
+                <ul class="nav-dropdown" role="menu" aria-label="{{ link.title }} {{ 'general.accessibility.submenu' | t | default: 'submenu' }}">
                   {% for sublink in link.links %}
-                    <li role="none"><a href="{{ sublink.url }}" class="nav-dropdown-link" role="menuitem">{{ sublink.title }}</a></li>
+                    <li role="none">
+                      <a href="{{ sublink.url }}" class="nav-dropdown-link" role="menuitem">
+                        {{ sublink.title }}
+                      </a>
+                    </li>
                   {% endfor %}
                 </ul>
               {% endif %}
@@ -85,19 +113,19 @@
         <button 
           class="header-icon" 
           id="search-toggle"
-          aria-label="Open search"
+          aria-label="{{ 'general.search.title' | t }}"
           aria-expanded="false"
           aria-controls="search-overlay"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
           </svg>
         </button>
       {% endif %}
 
       {% if section.settings.show_account %}
-        <a href="{{ routes.account_url }}" class="header-icon" aria-label="{% if customer %}My account{% else %}Login{% endif %}">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <a href="{{ routes.account_url }}" class="header-icon" aria-label="{% if customer %}{{ 'customer.account.title' | t }}{% else %}{{ 'customer.login.title' | t }}{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
           </svg>
         </a>
@@ -106,12 +134,12 @@
       <button 
         class="header-icon cart-toggle"
         id="cart-toggle"
-        aria-label="Open cart ({{ cart.item_count }} items)"
+        aria-label="{{ 'layout.cart.title' | t }} ({{ cart.item_count }} {{ 'layout.cart.items_count' | t }})"
         aria-expanded="false"
-        aria-controls="cart-drawer"
+        aria-controls="mini-cart"
+        data-cart-toggle
       >
-        <!-- SVG icon here -->
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
         </svg>
         {% if cart.item_count > 0 %}
@@ -119,174 +147,696 @@
         {% endif %}
       </button>
     </div>
-  </div>  <!-- Close header-inner -->
-</header>  <!-- Close header -->
-
-{% comment %} Search Overlay {% endcomment %}
-{% if section.settings.show_search %}
-  <div class="search-overlay" id="search-overlay" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="search-overlay-content">
-      <button class="search-overlay-close" id="search-close" aria-label="Close search">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-      <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
-        <input
-          type="search"
-          name="q"
-          placeholder="{{ section.settings.search_placeholder | default: 'Search products...' }}"
-          class="search-input"
-          autocomplete="off"
-          aria-label="Search"
-        />
-        <button type="submit" class="search-submit" aria-label="Submit search">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
-          </svg>
-        </button>
-      </form>
-      <div id="search-results" class="search-results" aria-live="polite"></div>
-    </div>
   </div>
-{% endif %}
+</header>
 
 <style>
-/* Search Overlay Styles */
-.search-overlay {
-  position: fixed;
-  top: 0; left: 0; right:0; bottom: 0;
-  background: rgba(0,0,0,0.9);
-  backdrop-filter: blur(10px);
-  z-index: var(--z-modal);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 10vh;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity var(--duration-base) var(--ease-out),
-              visibility var(--duration-base) var(--ease-out);
-}
-.search-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-.search-overlay-content {
+/* Announcement Bar */
+.announcement-bar {
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: var(--space-sm) 0;
+  text-align: center;
   position: relative;
-  width: 100%;
-  max-width: 800px;
-  padding: var(--space-xl);
+  z-index: var(--z-sticky);
 }
-.search-overlay-close {
-  position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
-  width: 40px;
-  height: 40px;
+
+.announcement-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.1);
-  border-radius: var(--radius-full);
-  transition: background-color var(--duration-fast) var(--ease-out);
+  gap: var(--space-sm);
+  flex-wrap: wrap;
 }
-.search-overlay-close:hover {
-  background: rgba(255,255,255,0.2);
+
+.announcement-icon svg {
+  width: 20px;
+  height: 20px;
 }
-.search-overlay-close svg {
-  width: 24px;
-  height: 24px;
-  stroke: var(--color-white);
+
+.announcement-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
-.search-form {
-  position: relative;
-  margin-bottom: var(--space-xl);
+
+.announcement-link {
+  color: var(--color-yellow);
+  text-decoration: underline;
+  font-weight: var(--font-weight-semibold);
+  transition: color var(--duration-fast) var(--ease-out);
 }
-.search-input {
-  width: 100%;
-  padding: var(--space-lg) var(--space-xl);
-  padding-right: 60px;
-  font-size: var(--font-size-xl);
-  background: var(--color-white);
-  border: none;
-  border-radius: var(--radius-xl);
-  color: var(--color-black);
+
+.announcement-link:hover {
+  color: var(--color-yellow-light);
 }
-.search-input:focus {
-  outline: 2px solid var(--color-yellow);
-  outline-offset: 2px;
-}
-.search-submit {
+
+.announcement-close {
   position: absolute;
   right: var(--space-md);
   top: 50%;
   transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  padding: var(--space-xs);
+  opacity: 0.7;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.announcement-close:hover {
+  opacity: 1;
+}
+
+/* Header Styles */
+.site-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #f7ca00 0%, #ffd700 100%);
+  color: var(--color-black);
+  font-weight: var(--font-weight-semibold);
+  z-index: var(--z-fixed);
+  transition: transform var(--duration-base) var(--ease-out),
+              opacity var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+  will-change: transform, opacity;
+}
+
+.site-header.is-scrolled {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(90deg, #e6b800 0%, #ffca00 100%);
+}
+
+.site-header.is-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-xl);
+  max-width: 1536px;
+  margin: 0 auto;
+}
+
+/* Logo */
+.site-logo {
+  display: flex;
+  align-items: center;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.site-logo:hover {
+  transform: scale(1.05);
+}
+
+.site-logo img {
+  max-height: 60px;
+  width: auto;
+}
+
+.site-logo-text {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-black);
+}
+
+/* Navigation */
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-link {
+  position: relative;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  color: var(--color-black);
+  padding: var(--space-sm) 0;
+  transition: color var(--duration-base) var(--ease-out),
+              transform var(--duration-base) var(--ease-out);
+}
+
+.nav-link:hover {
+  color: var(--color-yellow-dark);
+  transform: translateY(-2px);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-yellow-dark);
+  transition: width var(--duration-base) var(--ease-out);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Dropdown Menu */
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 250px;
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-md);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity var(--duration-base) var(--ease-out),
+              transform var(--duration-base) var(--ease-out),
+              visibility var(--duration-base) var(--ease-out);
+  z-index: var(--z-dropdown);
+}
+
+.nav-item:hover .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-dropdown-link {
+  display: block;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-gray-700);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+.nav-dropdown-link:hover {
+  background-color: var(--color-gray-50);
+  color: var(--color-black);
+}
+
+/* Header Actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.header-icon {
+  position: relative;
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-yellow);
   border-radius: var(--radius-full);
-  transition: transform var(--duration-fast) var(--ease-out);
+  transition: background-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+  color: var(--color-black);
+  background: none;
+  border: none;
+  cursor: pointer;
 }
-.search-submit:hover {
-  transform: translateY(-50%) scale(1.1);
+
+.header-icon:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
 }
-.search-submit svg {
+
+.header-icon:focus-visible {
+  outline: 2px solid var(--color-yellow);
+  outline-offset: 2px;
+}
+
+.header-icon svg {
   width: 20px;
   height: 20px;
-  stroke: var(--color-black);
+  stroke: currentColor;
 }
-.search-results {
-  background: var(--color-white);
-  border-radius: var(--radius-xl);
-  padding: var(--space-xl);
-  max-height: 60vh;
-  overflow-y: auto;
+
+/* Cart Count Badge */
+.cart-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-error);
+  color: var(--color-white);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-full);
+  padding: 0 var(--space-xs);
+  animation: scaleIn var(--duration-base) ease-out;
 }
-@media (max-width: 768px) {
-  .search-overlay-content {
+
+.cart-count:empty {
+  display: none;
+}
+
+/* Mobile Menu */
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--color-black);
+  transition: transform var(--duration-base) var(--ease-out),
+              opacity var(--duration-base) var(--ease-out);
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .header-inner {
     padding: var(--space-md);
   }
-  .search-input {
+  
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  
+  .main-nav {
+    position: fixed;
+    top: 70px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 70px);
+    background: var(--color-white);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-xl);
+    transition: left var(--duration-base) var(--ease-out);
+    overflow-y: auto;
+    z-index: var(--z-fixed);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .main-nav.active {
+    left: 0;
+  }
+  
+  .nav-links {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .nav-link {
     font-size: var(--font-size-lg);
-    padding: var(--space-md) var(--space-lg);
+    padding: var(--space-md) 0;
+    width: 100%;
+  }
+
+  .nav-dropdown {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    margin-top: var(--space-sm);
+    margin-left: var(--space-md);
+  }
+
+  .has-dropdown .nav-link::after {
+    content: '+';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--font-size-xl);
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .has-dropdown.is-open .nav-link::after {
+    transform: translateY(-50%) rotate(45deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .announcement-bar {
+    padding: var(--space-xs) 0;
+  }
+
+  .announcement-content {
+    padding: 0 var(--space-2xl);
+  }
+
+  .announcement-text {
+    font-size: var(--font-size-xs);
+  }
+
+  .header-actions {
+    gap: var(--space-sm);
+  }
+
+  .header-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header-icon svg {
+    width: 18px;
+    height: 18px;
   }
 }
 </style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const header = document.querySelector('.site-header.sticky-header');
-    if (!header) return;
-    
-    let lastScrollTop = 0;
-    const scrollThreshold = 100;
+    try {
+      const header = document.querySelector('.site-header.sticky-header');
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const mainNav = document.getElementById('main-navigation');
+      const announcementBar = document.querySelector('[data-announcement-bar]');
+      
+      if (!header) return;
+      
+      let lastScrollTop = 0;
+      const scrollThreshold = 100;
 
-    window.addEventListener('scroll', function() {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      // Enhanced scroll handling with performance optimization
+      let ticking = false;
+      function handleScroll() {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            try {
+              const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-      if(scrollTop > 50) {
-        header.classList.add('is-scrolled');
-      } else {
-        header.classList.remove('is-scrolled');
-      }
+              // Add scrolled class
+              header.classList.toggle('is-scrolled', scrollTop > 50);
 
-      if(scrollTop > scrollThreshold) {
-        if(scrollTop > lastScrollTop){
-          // Scrolling down
-          header.classList.add('is-hidden');
-        } else {
-          // Scrolling up
-          header.classList.remove('is-hidden');
+              // Hide/show header on scroll
+              if (scrollTop > scrollThreshold) {
+                if (scrollTop > lastScrollTop && scrollTop > 200) {
+                  header.classList.add('is-hidden');
+                } else {
+                  header.classList.remove('is-hidden');
+                }
+              } else {
+                header.classList.remove('is-hidden');
+              }
+
+              lastScrollTop = Math.max(0, scrollTop);
+            } catch (error) {
+              console.error('Scroll handler error:', error);
+            }
+            ticking = false;
+          });
+          ticking = true;
         }
-      } else {
-        header.classList.remove('is-hidden');
       }
 
-      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    });
+      window.addEventListener('scroll', handleScroll, { passive: true });
+
+      // Enhanced mobile menu with accessibility
+      if (mobileMenuToggle && mainNav) {
+        mobileMenuToggle.addEventListener('click', function() {
+          try {
+            const isOpen = mainNav.classList.toggle('active');
+            this.classList.toggle('active', isOpen);
+            document.body.classList.toggle('menu-open', isOpen);
+            
+            // Update ARIA attributes
+            this.setAttribute('aria-expanded', isOpen);
+            
+            // Focus management
+            if (isOpen) {
+              const firstLink = mainNav.querySelector('a');
+              if (firstLink) {
+                setTimeout(() => firstLink.focus(), 300);
+              }
+            }
+          } catch (error) {
+            console.error('Mobile menu toggle error:', error);
+          }
+        });
+
+        // Close menu on outside click
+        document.addEventListener('click', function(e) {
+          if (mainNav.classList.contains('active') && 
+              !mainNav.contains(e.target) && 
+              !mobileMenuToggle.contains(e.target)) {
+            closeMobileMenu();
+          }
+        });
+
+        // Handle submenu toggles on mobile
+        const submenuToggles = mainNav.querySelectorAll('.has-dropdown > a');
+        submenuToggles.forEach(toggle => {
+          toggle.addEventListener('click', function(e) {
+            if (window.innerWidth <= 1024) {
+              e.preventDefault();
+              const parent = this.parentElement;
+              parent.classList.toggle('is-open');
+              
+              const isOpen = parent.classList.contains('is-open');
+              this.setAttribute('aria-expanded', isOpen);
+            }
+          });
+        });
+      }
+
+      function closeMobileMenu() {
+        if (mainNav && mobileMenuToggle) {
+          mainNav.classList.remove('active');
+          mobileMenuToggle.classList.remove('active');
+          document.body.classList.remove('menu-open');
+          mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      // Enhanced keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          if (mainNav?.classList.contains('active')) {
+            closeMobileMenu();
+            mobileMenuToggle?.focus();
+          }
+        }
+      });
+
+      // Announcement bar dismissal
+      const announcementClose = document.querySelector('[data-announcement-close]');
+      if (announcementClose && announcementBar) {
+        announcementClose.addEventListener('click', function() {
+          try {
+            announcementBar.style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+              announcementBar.style.display = 'none';
+            }, 300);
+            
+            // Store dismissal in localStorage
+            localStorage.setItem('announcement-dismissed', 'true');
+          } catch (error) {
+            console.error('Error dismissing announcement:', error);
+          }
+        });
+
+        // Check if announcement was previously dismissed
+        if (localStorage.getItem('announcement-dismissed')) {
+          announcementBar.style.display = 'none';
+        }
+      }
+
+      // Search toggle functionality
+      const searchToggle = document.getElementById('search-toggle');
+      if (searchToggle) {
+        searchToggle.addEventListener('click', function() {
+          try {
+            if (window.searchManager) {
+              window.searchManager.openSearch();
+              this.setAttribute('aria-expanded', 'true');
+            }
+          } catch (error) {
+            console.error('Search toggle error:', error);
+          }
+        });
+      }
+
+      // Cart toggle functionality
+      const cartToggle = document.getElementById('cart-toggle');
+      if (cartToggle) {
+        cartToggle.addEventListener('click', function() {
+          try {
+            if (window.ajaxCart) {
+              window.ajaxCart.toggleCartDrawer();
+              const isOpen = document.querySelector('.mini-cart.is-open');
+              this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            }
+          } catch (error) {
+            console.error('Cart toggle error:', error);
+          }
+        });
+      }
+
+      // Update cart count when cart changes
+      document.addEventListener('cart:updated', function(e) {
+        try {
+          const cartCount = document.querySelector('.cart-count');
+          const cartToggle = document.getElementById('cart-toggle');
+          
+          if (cartCount && cartToggle) {
+            const itemCount = e.detail.cart.item_count;
+            cartCount.textContent = itemCount;
+            
+            // Update ARIA label
+            const itemsText = itemCount === 1 ? 'item' : 'items';
+            cartToggle.setAttribute('aria-label', `Cart (${itemCount} ${itemsText})`);
+            
+            // Show/hide count badge
+            cartCount.style.display = itemCount > 0 ? 'flex' : 'none';
+          }
+        } catch (error) {
+          console.error('Cart count update error:', error);
+        }
+      });
+
+    } catch (error) {
+      console.error('Header initialization error:', error);
+    }
   });
 </script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Announcement Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement bar",
+      "default": false
+    },
+    {
+      "type": "html",
+      "id": "announcement_icon",
+      "label": "Announcement icon (SVG)"
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement text",
+      "default": "Free shipping on orders over $500 MXN!"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Announcement link"
+    },
+    {
+      "type": "text",
+      "id": "announcement_link_text",
+      "label": "Link text",
+      "default": "Learn More"
+    },
+    {
+      "type": "checkbox",
+      "id": "announcement_dismissible",
+      "label": "Allow users to dismiss",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "nav_home_text",
+      "label": "Home link text",
+      "default": "Inicio"
+    },
+    {
+      "type": "text",
+      "id": "nav_products_text",
+      "label": "Products link text",
+      "default": "Productos"
+    },
+    {
+      "type": "header",
+      "content": "Header Actions"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account link",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header",
+      "category": "Header"
+    }
+  ]
+}
+{% endschema %}
