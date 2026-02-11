@@ -1,0 +1,86 @@
+<div class="filters" role="region" aria-label="Product filters">
+  <form method="get" action="{{ collection.url }}" id="filter-form">
+    
+    <!-- Category Filter -->
+    {% if collection.all_products_count > 0 %}
+      <div class="filter-group">
+        <label for="filter-category">Categoría</label>
+        <select id="filter-category" name="filter.v.option.category" onchange="this.form.submit()">
+          <option value="">Todas</option>
+          {% for tag in collection.all_tags %}
+            {% if tag contains 'category_' %}
+              <option value="{{ tag }}">{{ tag | remove: 'category_' | capitalize }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+    {% endif %}
+
+    <!-- Price Filter -->
+    <div class="filter-group">
+      <label>Precio</label>
+      <input type="range" name="filter.v.price" min="0" max="1000" step="10" oninput="this.nextElementSibling.value = this.value">
+      <output>1000</output>
+    </div>
+
+    <!-- Brand Filter -->
+    <div class="filter-group">
+      <label for="filter-brand">Marca</label>
+      <select id="filter-brand" name="filter.v.option.brand" onchange="this.form.submit()">
+        <option value="">Todas</option>
+        {% assign all_brands = '' | split: '' %}
+        {% for product in collection.products %}
+          {% assign brand = product.vendor %}
+          {% unless all_brands contains brand %}
+            {% assign all_brands = all_brands %}
+          {% endunless %}
+        {% endfor %}
+        {% for brand in all_brands %}
+          <option value="{{ brand }}">{{ brand }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Sort -->
+    <div class="filter-group">
+      <label for="filter-sort">Ordenar por</label>
+      <select id="filter-sort" name="sort_by" onchange="this.form.submit()">
+        <option value="manual">Por defecto</option>
+        <option value="price-ascending">Precio: menor a mayor</option>
+        <option value="price-descending">Precio: mayor a menor</option>
+        <option value="created-descending">Nuevos primero</option>
+        <option value="best-selling">Más vendidos</option>
+      </select>
+    </div>
+
+  </form>
+</div>
+
+<style>
+  .filters {
+    border: 1px solid #eee; background: #fff; padding: 1rem; border-radius: 10px; margin-bottom: 2rem;
+  }
+  .filter-group { margin-bottom: 1rem; }
+  label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+  select, input[type=range] { width: 100%; padding: 0.5rem; }
+  output {
+    display: block;
+    text-align: right;
+    padding: 0 0.5rem 1rem 0;
+    font-weight: 600;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Product Filters",
+  "settings": [
+    {
+      "type": "text",
+      "id": "filter_title",
+      "label": "Título del filtro",
+      "default": "Filtrar productos"
+    }
+  ]
+}
+{% endschema %}
