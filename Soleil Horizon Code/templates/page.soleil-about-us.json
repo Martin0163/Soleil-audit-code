@@ -1,0 +1,21 @@
+/*
+ * ------------------------------------------------------------
+ * INTEGRATED FROM: Codigo Soleil
+ * INTEGRATION DATE: 2026-02-11
+ *
+ * This template was created during the integration of
+ * Codigo Soleil custom pages into the Soleil Horizon Code theme.
+ * It references soleil-prefixed sections for compatibility.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "soleil-about-us",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
