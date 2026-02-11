@@ -1,870 +1,565 @@
 <!doctype html>
-
 <html class="no-js" lang="{{ request.locale.iso_code }}">
-
 <head>
-
   <meta charset="utf-8">
-
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
   <meta name="viewport" content="width=device-width,initial-scale=1">
-
   <meta name="theme-color" content="{{ settings.color_primary }}">
   
-
   {%- if settings.favicon != blank -%}
-
-    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: '32x32' }}">
-
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
   {%- endif -%}
 
-
+  {%- comment -%} Preconnect to external domains for performance {%- endcomment -%}
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="preconnect" href="//fonts.gstatic.com" crossorigin>
 
   {%- capture seo_title -%}
-
     {{ page_title }}
-
     {%- if current_tags -%} &ndash; tagged "{{ current_tags | join: ', ' }}"{%- endif -%}
-
     {%- if current_page != 1 -%} &ndash; Page {{ current_page }}{%- endif -%}
-
     {%- unless page_title contains shop.name -%} &ndash; {{ shop.name }}{%- endunless -%}
-
   {%- endcapture -%}
-
   <title>{{ seo_title }}</title>
 
-
-
   {%- if page_description -%}
-
     <meta name="description" content="{{ page_description | escape }}">
-
   {%- endif -%}
-
-
 
   <link rel="canonical" href="{{ canonical_url }}">
 
-
-
+  {%- comment -%} Open Graph Meta Tags {%- endcomment -%}
   {%- if settings.social_sharing_image -%}
-  <meta property="og:image" content="http:{{ settings.social_sharing_image | image_url: '1200x1200' }}">
-  <meta property="og:image:secure_url" content="https:{{ settings.social_sharing_image | image_url: '1200x1200' }}">
-{%- endif -%}
-
+    <meta property="og:image" content="{{ settings.social_sharing_image | image_url: width: 1200, height: 1200 }}">
+    <meta property="og:image:secure_url" content="{{ settings.social_sharing_image | image_url: width: 1200, height: 1200 }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="1200">
+  {%- endif -%}
   <meta property="og:site_name" content="{{ shop.name }}">
-
   <meta property="og:url" content="{{ canonical_url }}">
-
   <meta property="og:title" content="{{ seo_title }}">
-
   <meta property="og:type" content="website">
-
   <meta property="og:description" content="{{ page_description | escape }}">
 
-
-
   {%- if template contains 'product' -%}
-
     <meta property="og:type" content="product">
-
     <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
-
     <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
-
+    <meta property="product:brand" content="{{ product.vendor }}">
+    <meta property="product:availability" content="{% if product.available %}in stock{% else %}out of stock{% endif %}">
   {%- endif -%}
 
-
-
+  {%- comment -%} Twitter Card Meta Tags {%- endcomment -%}
   <meta name="twitter:card" content="summary_large_image">
-
   <meta name="twitter:title" content="{{ seo_title }}">
-
   <meta name="twitter:description" content="{{ page_description | escape }}">
-
-
+  {%- if settings.social_sharing_image -%}
+    <meta name="twitter:image" content="{{ settings.social_sharing_image | image_url: width: 1200, height: 630 }}">
+  {%- endif -%}
 
   {{ content_for_header }}
 
-
-
-  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
-
   {%- comment -%} Preload critical assets for performance {%- endcomment -%}
-  <link rel="preload" href="{{ 'theme.css' | asset_url }}" as="style">
-  <link rel="preload" href="{{ 'theme.js' | asset_url }}" as="script">
+  {{ 'theme.js' | asset_url | preload_tag: as: 'script' }}
+  {{ 'ajax-cart.js' | asset_url | preload_tag: as: 'script' }}
 
-  {%- comment -%} Main stylesheet - Fonts are hosted on Shopify CDN {%- endcomment -%}
-  {{ 'theme.css' | asset_url | stylesheet_tag }}
-
-
-
-  <script>
-
-    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
-
-    
-
-    // Theme configuration
-
-    window.theme = window.theme || {};
-
-    theme.strings = {
-
-      addToCart: {{ 'products.product.add_to_cart' | t | json }},
-
-      soldOut: {{ 'products.product.sold_out' | t | json }},
-
-      unavailable: {{ 'products.product.unavailable' | t | json }},
-
-      cartError: {{ 'cart.general.cart_error' | t | json }},
-
-      quantityMinimumMessage: {{ 'products.product.quantity_minimum_message' | t | json }}
-
-    };
-
-    theme.settings = {
-
-      cartType: {{ settings.cart_type | json }},
-
-      moneyFormat: {{ shop.money_format | json }},
-
-      currencyCode: {{ cart.currency.iso_code | json }}
-
-    };
-
-  </script>
-
-
-
-  <script src="{{ 'theme.js' | asset_url }}" defer></script>
-
-  {<script src="{{ 'ajax-cart.js' | asset_url }}" defer></script>
-
-
-
-  {%- if request.page_type contains 'customers/' -%}
-
-    <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
-
-  {%- endif -%}
-
-</head>
-
-
-
-<body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% if customer %} customer-logged-in{% endif %}">
-
-  
-
-  {%- comment -%} Skip to content link for keyboard navigation accessibility {%- endcomment -%}
-  <a class="skip-to-content-link" href="#MainContent">
-
-    {{ 'accessibility.skip_to_text' | t }}
-
-  </a>
-
-
-
-  {% section 'header' %}
-
-
-
-  <main id="MainContent" class="main-content" role="main">
-
-    {{ content_for_layout }}
-
-  </main>
-
-
-
-  {% section 'footer' %}
-
-  {% section 'mini_cart' %}
-
-
-
-  {%- comment -%} Quick View Modal {%- endcomment -%}
-
-  <div class="quick-view-modal" id="quick-view-modal">
-
-    <div class="quick-view-overlay"></div>
-
-    <div class="quick-view-container">
-
-      <button type="button" class="quick-view-close" aria-label="Close">
-
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-
-          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-
-        </svg>
-
-      </button>
-
-      <div class="quick-view-content"></div>
-
-    </div>
-
-  </div>
-
-
-
-  {%- comment -%} Search Overlay {%- endcomment -%}
-
-  <div class="search-overlay" id="search-overlay">
-
-    <div class="search-overlay-content">
-
-      <button type="button" class="search-close" aria-label="Close search">
-
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-
-          <path d="M24 8L8 24M8 8L24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-
-        </svg>
-
-      </button>
-
-      
-
-      <div class="search-form-wrapper">
-
-        <form action="{{ routes.search_url }}" method="get" class="search-form" role="search">
-
-          <input 
-
-            type="search" 
-
-            name="q" 
-
-            placeholder="{{ 'general.search.placeholder' }}"
-
-            class="search-input"
-
-            autocomplete="off"
-
-            aria-label="{{ 'general.search.placeholder' }}"
-
-          >
-
-          <button type="submit" class="search-submit" aria-label="{{ 'general.search.submit' }}">
-
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-
-              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-
-              <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-
-            </svg>
-
-          </button>
-
-        </form>
-
-        
-
-        <div class="search-results" id="search-results"></div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
+  {%- comment -%} Critical CSS inline for performance {%- endcomment -%}
   <style>
-
+    /* Critical above-the-fold CSS */
     :root {
-
-      /* Primary Colors */
-
       --color-black: #000000;
-
       --color-white: #FFFFFF;
-
       --color-yellow: #FFD700;
-
       --color-yellow-dark: #E6A500;
-
       --color-yellow-light: #FFF3B0;
-
-      
-
-      /* Neutrals */
-
       --color-gray-50: #FAF9F7;
-
       --color-gray-100: #F5F5F0;
-
       --color-gray-200: #E5E7EB;
-
       --color-gray-300: #D6D3D1;
-
       --color-gray-400: #9CA3AF;
-
       --color-gray-500: #8D8D8D;
-
       --color-gray-600: #4B5563;
-
       --color-gray-700: #4A4A4A;
-
       --color-gray-800: #1F2937;
-
       --color-gray-900: #111827;
-
-      
-
-      /* Semantic Colors */
-
       --color-success: #4CAF50;
-
       --color-error: #E63946;
-
       --color-warning: #E6B800;
-
       --color-info: #6A5ACD;
-
-
-
-      /* Support Colors */
-
       --color-blush: #F4C2C2;
-
       --color-nude: #D8BFAA;
-
       --color-plum: #6D3B47;
-      
       --color-cream: #FFF8E7;
-
-
-      
-
-      /* Gradients */
-
       --gradient-yellow: linear-gradient(135deg, var(--color-yellow) 0%, var(--color-yellow-dark) 100%);
-
-      --gradient-dark: linear-gradient(135deg, var(--color-gray-900) 0%, var(--color-black) 100%);
-
-      --gradient-light: linear-gradient(135deg, var(--color-white) 0%, var(--color-gray-50) 100%);
-
-      
-
-      /* Shadows */
-
       --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-
       --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-
       --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-      --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-
       --shadow-yellow: 0 10px 30px -5px rgba(255, 215, 0, 0.3);
-
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --space-3xl: 4rem;
+      --space-4xl: 6rem;
+      --space-5xl: 8rem;
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-size-3xl: 1.875rem;
+      --font-size-4xl: 2.25rem;
+      --font-size-5xl: 3rem;
+      --font-size-6xl: 3.75rem;
+      --font-weight-light: 300;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+      --line-height-tight: 1.25;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.75;
+      --radius-sm: 0.25rem;
+      --radius-md: 0.375rem;
+      --radius-lg: 0.5rem;
+      --radius-xl: 0.75rem;
+      --radius-2xl: 1rem;
+      --radius-full: 9999px;
+      --duration-fast: 150ms;
+      --duration-base: 300ms;
+      --duration-slow: 500ms;
+      --ease-in: cubic-bezier(0.4, 0, 1, 1);
+      --ease-out: cubic-bezier(0, 0, 0.2, 1);
+      --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+      --z-dropdown: 1000;
+      --z-sticky: 1020;
+      --z-fixed: 1030;
+      --z-modal-backdrop: 1040;
+      --z-modal: 1050;
+      --z-popover: 1060;
+      --z-tooltip: 1070;
+      --z-toast: 1080;
     }
 
     /* Skip to content link */
-
     .skip-to-content-link {
-
       position: absolute;
-
       top: -100px;
-
       left: 0;
-
       background: var(--color-yellow);
-
       color: var(--color-black);
-
       padding: 1rem 2rem;
-
       text-decoration: none;
-
       font-weight: 600;
-
       z-index: 10001;
-
       transition: top 0.3s ease;
-
+      border-radius: 0 0 var(--radius-md) 0;
     }
-
-
 
     .skip-to-content-link:focus {
-
       top: 0;
-
+      outline: 3px solid var(--color-black);
+      outline-offset: -3px;
     }
-
-
 
     /* Main content */
-
     .main-content {
-
       min-height: 50vh;
-
     }
-
-
-
-    /* Quick View Modal */
-
-    .quick-view-modal {
-
-      position: fixed;
-
-      top: 0;
-
-      left: 0;
-
-      width: 100%;
-
-      height: 100%;
-
-      z-index: 9998;
-
-      display: none;
-
-      align-items: center;
-
-      justify-content: center;
-
-    }
-
-
-
-    .quick-view-modal.is-open {
-
-      display: flex;
-
-    }
-
-
-
-    .quick-view-overlay {
-
-      position: absolute;
-
-      top: 0;
-
-      left: 0;
-
-      width: 100%;
-
-      height: 100%;
-
-      background: rgba(0, 0, 0, 0.8);
-
-      animation: fadeIn 0.3s ease;
-
-    }
-
-
-
-    .quick-view-container {
-
-      position: relative;
-
-      width: 90%;
-
-      max-width: 1000px;
-
-      max-height: 90vh;
-
-      background: white;
-
-      border-radius: 12px;
-
-      overflow-y: auto;
-
-      animation: slideUp 0.3s ease;
-
-    }
-
-
-
-    .quick-view-close {
-
-      position: absolute;
-
-      top: 1rem;
-
-      right: 1rem;
-
-      z-index: 10;
-
-      background: white;
-
-      border: none;
-
-      width: 40px;
-
-      height: 40px;
-
-      border-radius: 50%;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      cursor: pointer;
-
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
-      transition: all 0.3s ease;
-
-    }
-
-
-
-    .quick-view-close:hover {
-
-      background: var(--color-black);
-
-      color: white;
-
-    }
-
-
-
-    .quick-view-content {
-
-      padding: 2rem;
-
-    }
-
-
-
-    /* Search Overlay */
-
-    .search-overlay {
-
-      position: fixed;
-
-      top: 0;
-
-      left: 0;
-
-      width: 100%;
-
-      height: 100%;
-
-      background: rgba(0, 0, 0, 0.95);
-
-      z-index: 9997;
-
-      display: flex;
-
-      align-items: flex-start;
-
-      justify-content: center;
-
-      padding-top: 10vh;
-
-      opacity: 0;
-
-      pointer-events: none;
-
-      transition: opacity 0.3s ease;
-
-    }
-
-
-
-    .search-overlay.is-open {
-
-      opacity: 1;
-
-      pointer-events: all;
-
-    }
-
-
-
-    .search-overlay-content {
-
-      width: 90%;
-
-      max-width: 800px;
-
-      position: relative;
-
-    }
-
-
-
-    .search-close {
-
-      position: absolute;
-
-      top: -60px;
-
-      right: 0;
-
-      background: none;
-
-      border: none;
-
-      color: white;
-
-      cursor: pointer;
-
-      padding: 0.5rem;
-
-      transition: transform 0.3s ease;
-
-    }
-
-
-
-    .search-close:hover {
-
-      transform: rotate(90deg);
-
-    }
-
-
-
-    .search-form {
-
-      position: relative;
-
-      margin-bottom: 2rem;
-
-    }
-
-
-
-    .search-input {
-
-      width: 100%;
-
-      padding: 1.5rem 4rem 1.5rem 2rem;
-
-      font-size: 1.5rem;
-
-      border: none;
-
-      border-radius: 50px;
-
-      background: white;
-
-      color: var(--color-black);
-
-    }
-
-
-
-    .search-input:focus {
-
-      outline: none;
-
-      box-shadow: 0 0 0 3px var(--color-yellow);
-
-    }
-
-
-
-    .search-submit {
-
-      position: absolute;
-
-      right: 1rem;
-
-      top: 50%;
-
-      transform: translateY(-50%);
-
-      background: none;
-
-      border: none;
-
-      padding: 0.5rem;
-
-      cursor: pointer;
-
-      color: var(--color-black);
-
-    }
-
-
-
-    .search-results {
-
-      background: white;
-
-      border-radius: 12px;
-
-      padding: 2rem;
-
-      max-height: 60vh;
-
-      overflow-y: auto;
-
-    }
-
-
-
-    /* Animations */
-
-    @keyframes fadeIn {
-
-      from {
-
-        opacity: 0;
-
-      }
-
-      to {
-
-        opacity: 1;
-
-      }
-
-    }
-
-
-
-    @keyframes slideUp {
-
-      from {
-
-        opacity: 0;
-
-        transform: translateY(50px);
-
-      }
-
-      to {
-
-        opacity: 1;
-
-        transform: translateY(0);
-
-      }
-
-    }
-
-
 
     /* Body states */
-
     body.menu-open,
-
     body.cart-open,
-
     body.search-open,
-
     body.modal-open {
-
       overflow: hidden;
-
     }
-
-
-
-    /* Responsive */
-
-    @media (max-width: 768px) {
-
-      .quick-view-container {
-
-        width: 100%;
-
-        max-width: 100%;
-
-        height: 100%;
-
-        max-height: 100%;
-
-        border-radius: 0;
-
-      }
-
-
-
-      .search-overlay {
-
-        padding-top: 5vh;
-
-      }
-
-
-
-      .search-input {
-
-        font-size: 1.125rem;
-
-        padding: 1.25rem 3.5rem 1.25rem 1.5rem;
-
-      }
-
-    }
-
   </style>
 
+  {%- comment -%} Main stylesheet - Non-critical CSS loaded asynchronously {%- endcomment -%}
+  {{ 'theme.css' | asset_url | stylesheet_tag: preload: true }}
 
-
-  <script>
-
-    // Quick View Modal
-
-    document.addEventListener('click', (e) => {
-
-      const modal = document.getElementById('quick-view-modal');
-
-      const closeBtn = e.target.closest('.quick-view-close');
-
-      const overlay = e.target.classList.contains('quick-view-overlay');
-
-      
-
-      if (closeBtn || overlay) {
-
-        modal.classList.remove('is-open');
-
-        document.body.classList.remove('modal-open');
-
-      }
-
-    });
-
-
-
-    // Search Overlay
-
-    document.addEventListener('keydown', (e) => {
-
-      if (e.key === 'Escape') {
-
-        const searchOverlay = document.getElementById('search-overlay');
-
-        if (searchOverlay.classList.contains('is-open')) {
-
-          searchOverlay.classList.remove('is-open');
-
-          document.body.classList.remove('search-open');
-
-        }
-
-      }
-
-    });
-
+  {%- comment -%} Structured Data for SEO {%- endcomment -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }},
+    "description": {{ shop.description | strip_html | truncate: 200 | json }},
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "{{ shop.url }}/search?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
   </script>
 
-</body>
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    
+    // Theme configuration
+    window.theme = window.theme || {};
+    theme.strings = {
+      addToCart: {{ 'products.product.add_to_cart' | t | json }},
+      soldOut: {{ 'products.product.sold_out' | t | json }},
+      unavailable: {{ 'products.product.unavailable' | t | json }},
+      cartError: {{ 'cart.general.cart_error' | t | json }},
+      quantityMinimumMessage: {{ 'products.product.quantity_minimum_message' | t | json }},
+      itemAdded: {{ 'cart.general.item_added' | t | json }},
+      itemRemoved: {{ 'cart.general.remove' | t | json }},
+      cartUpdated: {{ 'cart.general.update' | t | json }}
+    };
+    theme.settings = {
+      cartType: {{ settings.cart_type | json }},
+      moneyFormat: {{ shop.money_format | json }},
+      currencyCode: {{ cart.currency.iso_code | json }},
+      locale: {{ request.locale.iso_code | json }}
+    };
+    theme.routes = {
+      cart: {{ routes.cart_url | json }},
+      cartAdd: {{ routes.cart_add_url | json }},
+      cartChange: {{ routes.cart_change_url | json }},
+      search: {{ routes.search_url | json }}
+    };
 
+    // Error handling
+    window.addEventListener('error', function(e) {
+      console.error('Theme error:', e.error);
+    });
+
+    // Performance monitoring
+    if ('performance' in window) {
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          const perfData = performance.getEntriesByType('navigation')[0];
+          if (perfData) {
+            console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+          }
+        }, 0);
+      });
+    }
+  </script>
+
+  {%- comment -%} Load JavaScript with proper error handling {%- endcomment -%}
+  <script src="{{ 'theme.js' | asset_url }}" defer onerror="console.error('Failed to load theme.js')"></script>
+  <script src="{{ 'ajax-cart.js' | asset_url }}" defer onerror="console.error('Failed to load ajax-cart.js')"></script>
+
+  {%- if request.page_type contains 'customers/' -%}
+    <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+  {%- endif -%}
+</head>
+
+<body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% if customer %} customer-logged-in{% endif %}">
+  
+  {%- comment -%} Skip to content link for keyboard navigation accessibility {%- endcomment -%}
+  <a class="skip-to-content-link" href="#MainContent">
+    {{ 'general.accessibility.skip_to_text' | t }}
+  </a>
+
+  {%- comment -%} ARIA live region for announcements {%- endcomment -%}
+  <div id="a11y-announcer" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  {% section 'header' %}
+
+  <main id="MainContent" class="main-content" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'footer' %}
+  {% section 'mini_cart' %}
+
+  {%- comment -%} Enhanced Quick View Modal {%- endcomment -%}
+  <div class="quick-view-modal" id="quick-view-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="quick-view-overlay" data-modal-overlay></div>
+    <div class="quick-view-container" role="document">
+      <button type="button" class="quick-view-close" aria-label="{{ 'general.accessibility.close' | t }}" data-modal-close>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="quick-view-content" data-quick-view-content></div>
+    </div>
+  </div>
+
+  {%- comment -%} Enhanced Search Overlay {%- endcomment -%}
+  <div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="search-overlay-content">
+      <button type="button" class="search-close" aria-label="{{ 'general.accessibility.close' | t }}" data-search-close>
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M24 8L8 24M8 8L24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      
+      <div class="search-form-wrapper">
+        <form action="{{ routes.search_url }}" method="get" class="search-form" role="search">
+          <label for="search-input" class="visually-hidden">{{ 'general.search.placeholder' | t }}</label>
+          <input 
+            type="search" 
+            name="q" 
+            id="search-input"
+            placeholder="{{ 'general.search.placeholder' | t }}"
+            class="search-input"
+            autocomplete="off"
+            aria-describedby="search-instructions"
+          >
+          <button type="submit" class="search-submit" aria-label="{{ 'general.search.submit' | t }}">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+              <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </form>
+        
+        <div id="search-instructions" class="visually-hidden">
+          {{ 'general.search.instructions' | t | default: 'Type to search products, collections, and pages' }}
+        </div>
+        
+        <div class="search-results" id="search-results" role="region" aria-live="polite" aria-label="{{ 'general.search.results' | t | default: 'Search results' }}"></div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Enhanced Modal and Search JavaScript {%- endcomment -%}
+  <script>
+    (function() {
+      'use strict';
+
+      // Enhanced Modal Management
+      class ModalManager {
+        constructor() {
+          this.activeModal = null;
+          this.previousFocus = null;
+          this.init();
+        }
+
+        init() {
+          document.addEventListener('click', this.handleClick.bind(this));
+          document.addEventListener('keydown', this.handleKeydown.bind(this));
+        }
+
+        handleClick(e) {
+          const modalClose = e.target.closest('[data-modal-close]');
+          const modalOverlay = e.target.matches('[data-modal-overlay]');
+          
+          if (modalClose || modalOverlay) {
+            this.closeModal();
+          }
+        }
+
+        handleKeydown(e) {
+          if (e.key === 'Escape' && this.activeModal) {
+            this.closeModal();
+          }
+        }
+
+        openModal(modalId) {
+          try {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+
+            this.previousFocus = document.activeElement;
+            this.activeModal = modal;
+
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('modal-open');
+
+            // Focus management
+            const firstFocusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (firstFocusable) {
+              setTimeout(() => firstFocusable.focus(), 300);
+            }
+
+            // Trap focus
+            this.trapFocus(modal);
+          } catch (error) {
+            console.error('Error opening modal:', error);
+          }
+        }
+
+        closeModal() {
+          try {
+            if (!this.activeModal) return;
+
+            this.activeModal.classList.remove('is-open');
+            this.activeModal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+
+            // Restore focus
+            if (this.previousFocus) {
+              this.previousFocus.focus();
+            }
+
+            this.activeModal = null;
+            this.previousFocus = null;
+          } catch (error) {
+            console.error('Error closing modal:', error);
+          }
+        }
+
+        trapFocus(element) {
+          const focusableElements = element.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          );
+          const firstFocusable = focusableElements[0];
+          const lastFocusable = focusableElements[focusableElements.length - 1];
+
+          element.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+              if (e.shiftKey) {
+                if (document.activeElement === firstFocusable) {
+                  e.preventDefault();
+                  lastFocusable.focus();
+                }
+              } else {
+                if (document.activeElement === lastFocusable) {
+                  e.preventDefault();
+                  firstFocusable.focus();
+                }
+              }
+            }
+          });
+        }
+      }
+
+      // Enhanced Search Management
+      class SearchManager {
+        constructor() {
+          this.searchOverlay = document.getElementById('search-overlay');
+          this.searchInput = document.getElementById('search-input');
+          this.searchResults = document.getElementById('search-results');
+          this.searchClose = document.querySelector('[data-search-close]');
+          this.debounceTimer = null;
+          this.init();
+        }
+
+        init() {
+          if (!this.searchOverlay) return;
+
+          this.searchClose?.addEventListener('click', () => this.closeSearch());
+          this.searchInput?.addEventListener('input', (e) => this.handleSearch(e.target.value));
+          
+          // Close on overlay click
+          this.searchOverlay.addEventListener('click', (e) => {
+            if (e.target === this.searchOverlay) {
+              this.closeSearch();
+            }
+          });
+        }
+
+        openSearch() {
+          try {
+            if (!this.searchOverlay) return;
+
+            this.searchOverlay.classList.add('is-open');
+            this.searchOverlay.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('search-open');
+
+            if (this.searchInput) {
+              setTimeout(() => this.searchInput.focus(), 300);
+            }
+          } catch (error) {
+            console.error('Error opening search:', error);
+          }
+        }
+
+        closeSearch() {
+          try {
+            if (!this.searchOverlay) return;
+
+            this.searchOverlay.classList.remove('is-open');
+            this.searchOverlay.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('search-open');
+
+            if (this.searchInput) {
+              this.searchInput.value = '';
+            }
+            if (this.searchResults) {
+              this.searchResults.innerHTML = '';
+            }
+          } catch (error) {
+            console.error('Error closing search:', error);
+          }
+        }
+
+        handleSearch(query) {
+          clearTimeout(this.debounceTimer);
+          
+          if (query.length < 2) {
+            this.searchResults.innerHTML = '';
+            return;
+          }
+
+          this.debounceTimer = setTimeout(() => {
+            this.performSearch(query);
+          }, 300);
+        }
+
+        async performSearch(query) {
+          try {
+            this.searchResults.innerHTML = '<div class="search-loading">Searching...</div>';
+            
+            const response = await fetch(`${theme.routes.search}?q=${encodeURIComponent(query)}&view=json`);
+            if (!response.ok) throw new Error('Search failed');
+            
+            const data = await response.json();
+            this.displayResults(data.results || []);
+          } catch (error) {
+            console.error('Search error:', error);
+            this.searchResults.innerHTML = '<div class="search-error">Search temporarily unavailable</div>';
+          }
+        }
+
+        displayResults(results) {
+          if (results.length === 0) {
+            this.searchResults.innerHTML = '<div class="search-no-results">No results found</div>';
+            return;
+          }
+
+          const resultsHTML = results.map(result => `
+            <div class="search-result">
+              <a href="${result.url}">
+                <img src="${result.image}" alt="${result.title}" loading="lazy">
+                <div>
+                  <h3>${result.title}</h3>
+                  <p>${result.price}</p>
+                </div>
+              </a>
+            </div>
+          `).join('');
+
+          this.searchResults.innerHTML = resultsHTML;
+        }
+      }
+
+      // Initialize when DOM is ready
+      document.addEventListener('DOMContentLoaded', function() {
+        window.modalManager = new ModalManager();
+        window.searchManager = new SearchManager();
+
+        // Global search toggle
+        document.addEventListener('click', function(e) {
+          if (e.target.closest('#search-toggle')) {
+            e.preventDefault();
+            window.searchManager.openSearch();
+          }
+        });
+      });
+    })();
+  </script>
+
+  {%- comment -%} Non-critical CSS and JavaScript loaded after page load {%- endcomment -%}
+  <link rel="preload" href="{{ 'non-critical.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ 'non-critical.css' | asset_url }}"></noscript>
+</body>
 </html>
