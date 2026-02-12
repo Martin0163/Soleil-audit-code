@@ -5,22 +5,26 @@
  * This file may be updated by the Shopify admin theme editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
+ *
+ * INTEGRATION NOTE (2026-02-12): Collection page styled with
+ * Código Soleil palette. Mauve header + white product grid.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
-    "section": {
+    "collection_header": {
       "type": "section",
       "blocks": {
-        "text_tqQTNE": {
+        "text_title": {
           "type": "text",
           "name": "Title",
           "settings": {
             "text": "<h1>{{ closest.collection.title }}</h1>",
             "width": "fit-content",
             "max_width": "normal",
-            "alignment": "left",
+            "alignment": "center",
             "type_preset": "h2",
-            "font": "var(--font-primary--family)",
+            "font": "var(--font-heading--family)",
             "font_size": "",
             "line_height": "normal",
             "letter_spacing": "normal",
@@ -37,18 +41,18 @@
           },
           "blocks": {}
         },
-        "text_twGGkJ": {
+        "text_desc": {
           "type": "text",
           "name": "Description",
           "settings": {
             "text": "{{ closest.collection.description }}",
             "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
+            "max_width": "narrow",
+            "alignment": "center",
             "type_preset": "rte",
-            "font": "var(--font-primary--family)",
+            "font": "var(--font-body--family)",
             "font_size": "",
-            "line_height": "normal",
+            "line_height": "relaxed",
             "letter_spacing": "normal",
             "case": "none",
             "wrap": "pretty",
@@ -65,23 +69,23 @@
         }
       },
       "block_order": [
-        "text_tqQTNE",
-        "text_twGGkJ"
+        "text_title",
+        "text_desc"
       ],
       "name": "Collection heading",
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
+        "horizontal_alignment": "center",
         "vertical_alignment": "center",
         "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
+        "horizontal_alignment_flex_direction_column": "center",
         "vertical_alignment_flex_direction_column": "center",
         "gap": 12,
         "section_width": "page-width",
         "section_height": "",
         "section_height_custom": 50,
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-4",
         "background_media": "none",
         "video_position": "cover",
         "background_image_position": "cover",
@@ -93,8 +97,8 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "padding-block-start": 56,
+        "padding-block-end": 56
       }
     },
     "main": {
@@ -155,7 +159,7 @@
               },
               "blocks": {}
             },
-            "product_title_4nY4eT": {
+            "product_title": {
               "type": "product-title",
               "name": "t:names.product_title",
               "settings": {
@@ -180,7 +184,7 @@
               },
               "blocks": {}
             },
-            "price_EzJzMm": {
+            "price": {
               "type": "price",
               "settings": {
                 "show_sale_price_first": true,
@@ -205,8 +209,8 @@
           },
           "block_order": [
             "card-gallery",
-            "product_title_4nY4eT",
-            "price_EzJzMm"
+            "product_title",
+            "price"
           ]
         }
       },
@@ -222,12 +226,12 @@
         "padding-inline-end": 0,
         "color_scheme": "scheme-1",
         "padding-block-start": 0,
-        "padding-block-end": 32
+        "padding-block-end": 40
       }
     }
   },
   "order": [
-    "section",
+    "collection_header",
     "main"
   ]
 }

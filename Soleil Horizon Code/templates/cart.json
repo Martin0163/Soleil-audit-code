@@ -5,8 +5,12 @@
  * This file may be updated by the Shopify admin theme editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
+ *
+ * INTEGRATION NOTE (2026-02-12): Cart page styled with
+ * Código Soleil palette. Cream summary + plum accents.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "cart-section": {
       "type": "main-cart",
@@ -15,9 +19,9 @@
           "type": "_cart-title",
           "static": true,
           "settings": {
-            "title": "Cart",
+            "title": "Tu carrito",
             "show_count": true,
-            "type_preset": "h4",
+            "type_preset": "h3",
             "alignment": "left",
             "padding-block-start": 0,
             "padding-block-end": 0,
@@ -33,7 +37,7 @@
             "gap": 24,
             "image_ratio": "portrait",
             "dividers": true,
-            "vendor": false,
+            "vendor": true,
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -58,12 +62,12 @@
       },
       "settings": {
         "section_width": "page-width",
-        "color_scheme": "",
-        "padding-block-start": 24,
+        "color_scheme": "scheme-1",
+        "padding-block-start": 32,
         "padding-block-end": 0
       }
     },
-    "product_list_NNFgcy": {
+    "cart_recommendations": {
       "type": "product-list",
       "blocks": {
         "static-header": {
@@ -100,16 +104,16 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "product_list_text_fifeh4": {
+            "text_heading": {
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>You may also like</h3>",
+                "text": "<h3>Completa tu rutina de belleza</h3>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "h4",
-                "font": "var(--font-body--family)",
+                "font": "var(--font-heading--family)",
                 "font_size": "",
                 "line_height": "normal",
                 "letter_spacing": "normal",
@@ -126,11 +130,11 @@
               },
               "blocks": {}
             },
-            "product_list_button_eibbma": {
+            "button_viewall": {
               "type": "_product-list-button",
               "name": "t:names.product_list_button",
               "settings": {
-                "label": "View all",
+                "label": "Ver todo",
                 "open_in_new_tab": false,
                 "style_class": "link",
                 "width": "fit-content",
@@ -142,8 +146,8 @@
             }
           },
           "block_order": [
-            "product_list_text_fifeh4",
-            "product_list_button_eibbma"
+            "text_heading",
+            "button_viewall"
           ]
         },
         "static-product-card": {
@@ -164,7 +168,7 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "product_card_gallery_PEPpfq": {
+            "gallery": {
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
@@ -180,7 +184,7 @@
               },
               "blocks": {}
             },
-            "product_title_WNMpHe": {
+            "title": {
               "type": "product-title",
               "name": "t:names.product_title",
               "settings": {
@@ -189,7 +193,7 @@
                 "alignment": "left",
                 "type_preset": "rte",
                 "font": "var(--font-body--family)",
-                "font_size": "",
+                "font_size": "1rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -205,7 +209,7 @@
               },
               "blocks": {}
             },
-            "price_yXfkPX": {
+            "price": {
               "type": "price",
               "name": "t:names.product_price",
               "settings": {
@@ -230,17 +234,17 @@
             }
           },
           "block_order": [
-            "product_card_gallery_PEPpfq",
-            "product_title_WNMpHe",
-            "price_yXfkPX"
+            "gallery",
+            "title",
+            "price"
           ]
         }
       },
-      "name": "Featured collection",
+      "name": "Completa tu rutina",
       "settings": {
         "collection": "all",
         "layout_type": "grid",
-        "carousel_on_mobile": false,
+        "carousel_on_mobile": true,
         "max_products": 4,
         "columns": 4,
         "mobile_columns": "2",
@@ -252,14 +256,14 @@
         "section_width": "page-width",
         "horizontal_alignment": "flex-start",
         "gap": 28,
-        "color_scheme": "scheme-1",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "color_scheme": "scheme-soleil-gray",
+        "padding-block-start": 56,
+        "padding-block-end": 56
       }
     }
   },
   "order": [
     "cart-section",
-    "product_list_NNFgcy"
+    "cart_recommendations"
   ]
 }
