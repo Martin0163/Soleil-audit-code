@@ -1,0 +1,44 @@
+{%- comment -%}
+  INTEGRATED FROM: Codigo Soleil (Snippets/seo-schema-website.liquid)
+  INTEGRATION DATE: 2026-02-11
+  CHANGES: Added soleil- prefix, updated internal references
+  NOTE: This snippet uses Codigo Soleil's custom CSS variables.
+        Include soleil-design-tokens.liquid for full variable support.
+{%- endcomment -%}
+
+{% comment %}
+  Component: SEO Schema - Website
+  Purpose: Generates JSON-LD structured data for website and search functionality
+  Dependencies: None
+  Usage: {% render 'soleil-seo-schema-website' %}
+  
+  Parameters: None (uses shop object)
+  
+  SEO Benefits:
+  - Enables sitelinks search box in Google
+  - Improves site-wide search visibility
+  - Supports voice search queries
+  - Enhances brand presence in SERPs
+  
+  Maintenance Notes:
+  - Ensure search functionality works correctly
+  - Test search box appearance in Google Search Console
+  - Monitor search analytics
+{% endcomment %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ shop.name | json }},
+  "url": {{ shop.url | json }},
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": {{ shop.url | append: '/search?q={search_term_string}' | json }}
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>

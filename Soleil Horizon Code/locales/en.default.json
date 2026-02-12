@@ -5,6 +5,10 @@
  * This file may be updated by the Shopify admin language editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
+ *
+ * INTEGRATION NOTE (2026-02-11): Added 'soleil' namespace with
+ * custom translation keys from Codigo Soleil integration.
+ * These keys are used by soleil-prefixed sections and snippets.
  * ------------------------------------------------------------
  */
 {
@@ -57,50 +61,38 @@
     "view_pricing_info": "View pricing information"
   },
   "actions": {
-    // Quick add button on product cards, shortened version of add to cart
     "add": "Add",
     "add_to_cart": "Add to cart",
-    // Success message shown after adding item to cart
     "added": "Added",
-    // Button to apply discount code to cart
     "apply": "Apply",
     "back": "Back",
     "choose": "Choose",
-    // Button to reset current selection or input
     "clear": "Clear",
-    // Button to remove all applied product filters
     "clear_all": "Clear all",
     "close": "Close",
     "open": "Open",
-    // Continue shopping link on the cart page which takes the user back to a collection page
     "continue_shopping": "Continue shopping",
     "enter_password": "Enter password",
     "log_in_html": "Have an account? <a href=\"{{ link }}\">Log in</a> to check out faster.",
     "log_in": "Sign in",
     "log_out": "Log out",
     "open_image_in_full_screen": "Open image in full screen",
-    // Button to remove applied filters from search/collection results
     "remove": "Remove",
     "remove_discount": "Remove discount {{ code }}",
-    // Button to expand hidden product variant options
     "show_all_options": "Show all options",
     "see_items": {
       "one": "See {{ count }} item",
-      // Button to view filtered product results and close filter dialog
       "other": "See {{ count }} items"
     },
     "show_filters": "Filter",
     "show_less": "Show less",
     "show_more": "Show more",
     "sign_in_options": "Other sign in options",
-    // AR button to view 3D product model in physical space
     "view_in_your_space": "View in your space",
-    // Button to view complete collection/product list
     "view_all": "View all",
     "more": "More",
     "zoom": "Zoom",
     "close_dialog": "Close dialog",
-    // Button to clear search filter and restore default view
     "reset": "Reset",
     "enter_using_password": "Enter using password",
     "sign_up": "Sign up",
@@ -245,7 +237,6 @@
     "search_results_no_results_check_spelling": "No results found for \"{{ terms }}\". Check the spelling or use a different word or phrase.",
     "search_results_resource_articles": "Blog posts",
     "search_results_resource_collections": "Collections",
-    // Section heading for Shopify store pages in search results
     "search_results_resource_pages": "Pages",
     "search_results_resource_products": "Products",
     "search_results_resource_products_count": {
@@ -262,10 +253,8 @@
       "one": "1 item added to cart",
       "other": "{{ count }} items added to cart"
     },
-    // Button to go from search preview to full search results page
     "search_results_view_all": "View all",
     "search_results_view_all_button": "View all",
-    // Label for customer's note to seller during checkout
     "seller_note": "Special instructions",
     "shipping_policy": "Shipping calculated at checkout.",
     "shipping_policy_html": "<a href=\"{{ link }}\">Shipping</a> calculated at checkout.",
@@ -281,7 +270,6 @@
     "taxes_included_shipping_at_checkout_without_policy_without_discounts": "Taxes included. Shipping is calculated at checkout.",
     "unavailable": "Unavailable",
     "use_fewer_filters_html": "Try using fewer filters, or <a class=\"{{ class }}\" href=\"{{ link }}\">clear all filters</a>.",
-    // Link or button to expand additional information
     "view_more_details": "View more details",
     "volume_pricing_available": "Volume pricing available",
     "volume_pricing": "Volume pricing",
@@ -294,7 +282,6 @@
     "product_count": "Product count",
     "errors": "Errors",
     "wrong_password": "Wrong password",
-    // Legend text for gift card delivery options
     "recipient_form_send_to": "Send to",
     "recipient_form_email_label": "Recipient’s email",
     "recipient_form_email_label_my_email": "My email",
@@ -310,7 +297,6 @@
     "product_custom_property_character_count": "{{ used_chars }}/{{ max_chars }} characters used"
   },
   "fields": {
-    // Separates min and max values in price range filter
     "separator": "to"
   },
   "gift_cards": {
@@ -354,6 +340,103 @@
       "in_cart": "in cart",
       "default_title": "Default Title",
       "sticky_add_to_cart": "Quick add to cart bar"
+    }
+  },
+  "soleil": {
+    "general": {
+      "view_all": "View All",
+      "learn_more": "Learn More",
+      "shop_now": "Shop Now",
+      "view_products": "View Products",
+      "subscribe": "Subscribe",
+      "search_brands": "Search brands...",
+      "apply": "Apply",
+      "clear_all": "Clear All",
+      "close": "Close",
+      "previous": "Previous",
+      "next": "Next",
+      "loading": "Loading...",
+      "no_results": "No results found",
+      "search_placeholder": "Search products..."
+    },
+    "products": {
+      "add_to_cart": "Add to Cart",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "on_sale": "Sale",
+      "new": "New",
+      "select_options": "Select Options",
+      "quick_view": "Quick View",
+      "add_to_wishlist": "Add to Wishlist",
+      "view_full_details": "View Full Details",
+      "save": "Save",
+      "regular_price": "Regular price",
+      "sale_price": "Sale price",
+      "price": "Price",
+      "unit_price": "Unit price",
+      "in_stock": "In Stock",
+      "quantity_minimum_message": "Minimum quantity required",
+      "vendor": "Brand",
+      "product_type": "Product Type",
+      "availability": "Availability"
+    },
+    "cart": {
+      "title": "Your Cart",
+      "empty": "Your cart is empty",
+      "continue_shopping": "Continue Shopping",
+      "subtotal": "Subtotal",
+      "total": "Total",
+      "checkout": "Checkout",
+      "view_cart": "View Cart",
+      "remove": "Remove",
+      "update": "Update",
+      "note": "Order Notes",
+      "note_placeholder": "Add a note to your order...",
+      "shipping": "Shipping",
+      "shipping_calculated": "Calculated at checkout",
+      "discount_code": "Discount Code",
+      "apply_discount": "Apply",
+      "free_shipping_message": "Free shipping on orders over {{ amount }}",
+      "free_shipping_achieved": "You've earned free shipping!",
+      "item_added": "Item added to cart",
+      "cart_error": "There was an error updating your cart"
+    },
+    "collections": {
+      "title": "Collections",
+      "filters_title": "Filters",
+      "sort_title": "Sort By",
+      "price_range": "Price Range",
+      "min_price": "Minimum price",
+      "max_price": "Maximum price",
+      "featured": "Featured",
+      "best_selling": "Best Selling",
+      "az": "Alphabetically, A-Z",
+      "za": "Alphabetically, Z-A",
+      "price_ascending": "Price, low to high",
+      "price_descending": "Price, high to low",
+      "date_ascending": "Date, old to new",
+      "date_descending": "Date, new to old",
+      "products_count": "{{ count }} products",
+      "no_products": "No products found",
+      "load_more": "Load More"
+    },
+    "sections": {
+      "about_us": "About Us",
+      "brands": "Our Brands",
+      "new_arrivals": "New Arrivals",
+      "promotions": "Promotions",
+      "dreams": "Our Vision",
+      "newsletter_title": "Stay Connected",
+      "newsletter_subtitle": "Subscribe for exclusive offers and updates"
+    },
+    "accessibility": {
+      "skip_to_text": "Skip to content",
+      "close": "Close",
+      "previous": "Previous",
+      "next": "Next",
+      "menu_toggle": "Toggle menu",
+      "search_toggle": "Toggle search",
+      "cart_toggle": "Toggle cart"
     }
   }
 }
