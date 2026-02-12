@@ -1,21 +1,256 @@
 /*
  * ------------------------------------------------------------
  * INTEGRATED FROM: Codigo Soleil
- * INTEGRATION DATE: 2026-02-11
+ * INTEGRATION DATE: 2026-02-12
  *
- * This template was created during the integration of
- * Codigo Soleil custom pages into the Soleil Horizon Code theme.
- * It references soleil-prefixed sections for compatibility.
+ * About Us page with unique multi-section layout from
+ * Código Soleil. Features hero banner, brand story,
+ * values grid, and CTA — all styled with Soleil palette.
  * ------------------------------------------------------------
  */
 {
   "sections": {
-    "main": {
+    "about_hero": {
+      "type": "hero",
+      "blocks": {
+        "subtitle_text": {
+          "type": "text",
+          "name": "Subtitle",
+          "settings": {
+            "text": "<p>Nuestra historia</p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "h6",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.875rem",
+            "line_height": "normal",
+            "letter_spacing": "0.15em",
+            "case": "uppercase",
+            "wrap": "pretty",
+            "color": "#FFD700",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "title_text": {
+          "type": "text",
+          "name": "Title",
+          "settings": {
+            "text": "<h1>Sobre Soleil Beauty</h1>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "h1",
+            "font": "var(--font-heading--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground-heading)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "desc_text": {
+          "type": "text",
+          "name": "Description",
+          "settings": {
+            "text": "<p>Dedicados a realzar tu belleza natural con productos premium seleccionados con amor</p>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "center",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1.125rem",
+            "line_height": "relaxed",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "subtitle_text",
+        "title_text",
+        "desc_text"
+      ],
+      "name": "About Hero",
+      "settings": {
+        "media_type_1": "image",
+        "media_type_2": "image",
+        "stack_media_on_mobile": false,
+        "custom_mobile_media": false,
+        "media_type_1_mobile": "image",
+        "media_type_2_mobile": "image",
+        "open_in_new_tab": false,
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "center",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "full-width",
+        "section_height": "medium",
+        "section_height_custom": 60,
+        "color_scheme": "scheme-6",
+        "toggle_overlay": true,
+        "overlay_color": "#12121280",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top",
+        "blurred_reflection": false,
+        "reflection_opacity": 75,
+        "padding-block-start": 100,
+        "padding-block-end": 100
+      }
+    },
+    "about_story": {
       "type": "soleil-about-us",
       "settings": {}
+    },
+    "about_dreams": {
+      "type": "soleil-dreams",
+      "settings": {}
+    },
+    "about_brands": {
+      "type": "brands-grid",
+      "settings": {}
+    },
+    "about_cta": {
+      "type": "section",
+      "blocks": {
+        "cta_title": {
+          "type": "text",
+          "name": "CTA Title",
+          "settings": {
+            "text": "<h2>¿Lista para brillar?</h2>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "h2",
+            "font": "var(--font-heading--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "cta_desc": {
+          "type": "text",
+          "name": "CTA Description",
+          "settings": {
+            "text": "<p>Explora nuestra colección completa de productos de belleza premium</p>",
+            "width": "100%",
+            "max_width": "narrow",
+            "alignment": "center",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1.125rem",
+            "line_height": "relaxed",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 16,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "cta_button": {
+          "type": "button",
+          "name": "CTA Button",
+          "settings": {
+            "label": "Comprar ahora",
+            "link": "shopify://collections/all",
+            "open_in_new_tab": false,
+            "style_class": "button",
+            "width": "fit-content",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "cta_title",
+        "cta_desc",
+        "cta_button"
+      ],
+      "name": "Call to Action",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "center",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-3",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 80,
+        "padding-block-end": 80
+      }
     }
   },
   "order": [
-    "main"
+    "about_hero",
+    "about_story",
+    "about_dreams",
+    "about_brands",
+    "about_cta"
   ]
 }

@@ -5,6 +5,9 @@
  * This file may be updated by the Shopify admin theme editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
+ *
+ * INTEGRATION NOTE (2026-02-12): Footer updated with Código
+ * Soleil dark scheme (scheme-5) for consistent brand styling.
  * ------------------------------------------------------------
  */
 {
@@ -56,7 +59,7 @@
             "text_LWt8Pz": {
               "type": "text",
               "settings": {
-                "text": "<h2>Join our email list</h2>",
+                "text": "<h2>Únete a nuestra lista</h2>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -81,7 +84,7 @@
             "text_f9CFLH": {
               "type": "text",
               "settings": {
-                "text": "<p>Get exclusive deals and early access to new products.</p>",
+                "text": "<p>Recibe ofertas exclusivas y acceso anticipado a nuevos productos de belleza.</p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -124,7 +127,7 @@
             "input_type_preset": "paragraph",
             "style_class": "button-unstyled",
             "display_type": "arrow",
-            "label": "Sign up",
+            "label": "Suscribirse",
             "integrated_button": true,
             "button_type_preset": "paragraph",
             "padding-block-start": 0,
@@ -143,8 +146,8 @@
       "settings": {
         "section_width": "page-width",
         "gap": 20,
-        "color_scheme": "scheme-1",
-        "padding-block-start": 30,
+        "color_scheme": "scheme-5",
+        "padding-block-start": 40,
         "padding-block-end": 30
       }
     },
@@ -197,8 +200,8 @@
       "settings": {
         "section_width": "page-width",
         "gap": 24,
-        "divider_thickness": 0,
-        "color_scheme": "",
+        "divider_thickness": 1,
+        "color_scheme": "scheme-5",
         "padding-block-start": 20,
         "padding-block-end": 48
       }

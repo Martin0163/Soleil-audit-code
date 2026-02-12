@@ -5,24 +5,55 @@
  * This file may be updated by the Shopify admin theme editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
+ *
+ * INTEGRATION NOTE (2026-02-12): Homepage redesigned with
+ * Código Soleil section layout and color palette.
+ * Layout: Hero → Collection Tabs → Featured Products →
+ * Promotions → Dreams → Testimonials → Brands → Routines
  * ------------------------------------------------------------
  */
 {
   "sections": {
-    "hero_jVaWmY": {
+    "hero_soleil": {
       "type": "hero",
       "blocks": {
-        "text_YLPk4p": {
+        "text_subtitle": {
           "type": "text",
           "name": "t:names.heading",
           "settings": {
-            "text": "<p>Browse our latest products</p>",
+            "text": "<p>Soleil Beauty Shop</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
+            "type_preset": "h5",
+            "font": "var(--font-subheading--family)",
             "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "0.15em",
+            "case": "uppercase",
+            "wrap": "pretty",
+            "color": "#FFD700",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_title": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h1>Descubre tu belleza natural</h1>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h1",
+            "font": "var(--font-heading--family)",
+            "font_size": "",
             "line_height": "normal",
             "letter_spacing": "normal",
             "case": "none",
@@ -38,12 +69,53 @@
           },
           "blocks": {}
         },
-        "button_H9gpTf": {
+        "text_desc": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>Productos de belleza premium seleccionados para realzar tu brillo interior</p>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1.125rem",
+            "line_height": "relaxed",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 8,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "button_shop": {
           "type": "button",
           "name": "t:names.button",
           "settings": {
-            "label": "Shop all",
+            "label": "Comprar ahora",
             "link": "shopify://collections/all",
+            "open_in_new_tab": false,
+            "style_class": "button",
+            "width": "fit-content",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100
+          },
+          "blocks": {}
+        },
+        "button_new": {
+          "type": "button",
+          "name": "t:names.button",
+          "settings": {
+            "label": "Novedades",
+            "link": "",
             "open_in_new_tab": false,
             "style_class": "button-secondary",
             "width": "fit-content",
@@ -55,8 +127,11 @@
         }
       },
       "block_order": [
-        "text_YLPk4p",
-        "button_H9gpTf"
+        "text_subtitle",
+        "text_title",
+        "text_desc",
+        "button_shop",
+        "button_new"
       ],
       "name": "t:names.hero",
       "settings": {
@@ -72,28 +147,28 @@
         "horizontal_alignment": "space-between",
         "vertical_alignment": "flex-end",
         "align_baseline": true,
-        "horizontal_alignment_flex_direction_column": "center",
+        "horizontal_alignment_flex_direction_column": "flex-start",
         "vertical_alignment_flex_direction_column": "flex-end",
-        "gap": 24,
-        "section_width": "page-width",
-        "section_height": "medium",
-        "section_height_custom": 50,
+        "gap": 16,
+        "section_width": "full-width",
+        "section_height": "large",
+        "section_height_custom": 80,
         "color_scheme": "scheme-6",
         "toggle_overlay": true,
         "overlay_color": "#12121266",
-        "overlay_style": "solid",
-        "gradient_direction": "to bottom",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top",
         "blurred_reflection": false,
         "reflection_opacity": 75,
-        "padding-block-start": 100,
-        "padding-block-end": 72
+        "padding-block-start": 120,
+        "padding-block-end": 80
       }
     },
-    "collection-tabs": {
+    "collection_tabs_soleil": {
       "type": "collection-tabs",
       "settings": {}
     },
-    "product_list_fa6P9H": {
+    "featured_products_soleil": {
       "type": "product-list",
       "blocks": {
         "static-header": {
@@ -130,16 +205,16 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "product_list_text_YFtzcL": {
+            "product_list_text_title": {
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
+                "text": "<h3>Productos destacados</h3>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
+                "type_preset": "h3",
+                "font": "var(--font-heading--family)",
                 "font_size": "",
                 "line_height": "normal",
                 "letter_spacing": "normal",
@@ -156,11 +231,11 @@
               },
               "blocks": {}
             },
-            "product_list_button_MWeP9V": {
+            "product_list_button_viewall": {
               "type": "_product-list-button",
               "name": "t:names.product_list_button",
               "settings": {
-                "label": "View all",
+                "label": "Ver todo",
                 "open_in_new_tab": false,
                 "style_class": "link",
                 "width": "fit-content",
@@ -172,8 +247,8 @@
             }
           },
           "block_order": [
-            "product_list_text_YFtzcL",
-            "product_list_button_MWeP9V"
+            "product_list_text_title",
+            "product_list_button_viewall"
           ]
         },
         "static-product-card": {
@@ -194,7 +269,7 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "product_card_gallery_677WP3": {
+            "product_card_gallery": {
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
@@ -210,7 +285,7 @@
               },
               "blocks": {}
             },
-            "product_title_YXxMTj": {
+            "product_title": {
               "type": "product-title",
               "name": "t:names.product_title",
               "settings": {
@@ -235,7 +310,7 @@
               },
               "blocks": {}
             },
-            "price_JQzVV4": {
+            "price": {
               "type": "price",
               "name": "t:names.product_price",
               "settings": {
@@ -257,17 +332,17 @@
             }
           },
           "block_order": [
-            "product_card_gallery_677WP3",
-            "product_title_YXxMTj",
-            "price_JQzVV4"
+            "product_card_gallery",
+            "product_title",
+            "price"
           ]
         }
       },
-      "name": "Featured collection",
+      "name": "Productos destacados",
       "settings": {
         "collection": "all",
         "layout_type": "grid",
-        "carousel_on_mobile": false,
+        "carousel_on_mobile": true,
         "max_products": 8,
         "columns": 4,
         "mobile_columns": "2",
@@ -280,34 +355,39 @@
         "horizontal_alignment": "flex-start",
         "gap": 28,
         "color_scheme": "scheme-1",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "padding-block-start": 56,
+        "padding-block-end": 56
       }
     },
-    "promotions": {
+    "promotions_soleil": {
       "type": "promotions",
       "settings": {}
     },
-    "testimonials": {
+    "dreams_soleil": {
+      "type": "soleil-dreams",
+      "settings": {}
+    },
+    "testimonials_soleil": {
       "type": "testimonials",
       "settings": {}
     },
-    "brands-grid": {
+    "brands_soleil": {
       "type": "brands-grid",
       "settings": {}
     },
-    "routines": {
+    "routines_soleil": {
       "type": "routines",
-      "settings":{}
+      "settings": {}
     }
   },
   "order": [
-    "hero_jVaWmY",
-    "collection-tabs",
-    "product_list_fa6P9H",
-    "promotions",
-    "testimonials",
-    "brands-grid",
-    "routines"
+    "hero_soleil",
+    "collection_tabs_soleil",
+    "featured_products_soleil",
+    "promotions_soleil",
+    "dreams_soleil",
+    "testimonials_soleil",
+    "brands_soleil",
+    "routines_soleil"
   ]
 }

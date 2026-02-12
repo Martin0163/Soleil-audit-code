@@ -5,8 +5,12 @@
  * This file may be updated by the Shopify admin theme editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
+ *
+ * INTEGRATION NOTE (2026-02-12): Blog listing styled with
+ * Código Soleil palette. Cream background for blog cards.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "main": {
       "type": "main-blog",
@@ -20,7 +24,7 @@
             "max_width": "narrow",
             "alignment": "left",
             "type_preset": "h2",
-            "font": "var(--font-primary--family)",
+            "font": "var(--font-heading--family)",
             "font_size": "",
             "line_height": "normal",
             "letter_spacing": "normal",
@@ -50,7 +54,7 @@
               "static": true,
               "settings": {
                 "type_preset": "h4",
-                "font": "var(--font-primary--family)",
+                "font": "var(--font-heading--family)",
                 "font_size": "",
                 "line_height": "normal",
                 "letter_spacing": "normal",
@@ -74,7 +78,7 @@
               "static": true,
               "settings": {
                 "show_date": true,
-                "show_author": false,
+                "show_author": true,
                 "type_preset": "",
                 "alignment": "left",
                 "show_alignment": false,
@@ -91,7 +95,7 @@
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
-                "border_radius": 4
+                "border_radius": 0
               },
               "blocks": {}
             }
@@ -103,9 +107,9 @@
         "title"
       ],
       "settings": {
-        "color_scheme": "",
+        "color_scheme": "scheme-2",
         "padding-block-start": 0,
-        "padding-block-end": 48
+        "padding-block-end": 56
       }
     }
   },

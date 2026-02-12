@@ -5,8 +5,12 @@
  * This file may be updated by the Shopify admin theme editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
+ *
+ * INTEGRATION NOTE (2026-02-12): Search page styled with
+ * Código Soleil palette. Gray header + white results grid.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "search": {
       "type": "search-header",
@@ -16,7 +20,7 @@
           "static": true,
           "settings": {
             "type_preset": "h2",
-            "font": "var(--font-primary--family)",
+            "font": "var(--font-heading--family)",
             "font_size": "",
             "line_height": "normal",
             "letter_spacing": "normal",
@@ -48,8 +52,8 @@
       },
       "settings": {
         "alignment": "flex-start",
-        "color_scheme": "scheme-1",
-        "padding-block-start": 40,
+        "color_scheme": "scheme-soleil-gray",
+        "padding-block-start": 48,
         "padding-block-end": 0
       }
     },
@@ -96,7 +100,7 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "product_card_gallery_cFExAi": {
+            "gallery": {
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
@@ -112,7 +116,7 @@
               },
               "blocks": {}
             },
-            "product_title_j7qXTx": {
+            "title": {
               "type": "product-title",
               "name": "t:names.product_title",
               "settings": {
@@ -137,7 +141,7 @@
               },
               "blocks": {}
             },
-            "price_fYkUgG": {
+            "price": {
               "type": "price",
               "name": "t:names.product_price",
               "settings": {
@@ -162,9 +166,9 @@
             }
           },
           "block_order": [
-            "product_card_gallery_cFExAi",
-            "product_title_j7qXTx",
-            "price_fYkUgG"
+            "gallery",
+            "title",
+            "price"
           ]
         }
       },
@@ -180,7 +184,7 @@
         "padding-inline-end": 0,
         "color_scheme": "scheme-1",
         "padding-block-start": 40,
-        "padding-block-end": 40
+        "padding-block-end": 48
       }
     }
   },

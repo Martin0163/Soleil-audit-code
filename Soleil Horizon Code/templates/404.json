@@ -5,22 +5,26 @@
  * This file may be updated by the Shopify admin theme editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
+ *
+ * INTEGRATION NOTE (2026-02-12): 404 page styled with
+ * Código Soleil palette. Plum hero + product discovery.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "main": {
       "type": "main-404",
       "blocks": {
-        "text_GqmVFf": {
+        "text_heading": {
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<h1>Page not found</h1>",
+            "text": "<h1>Página no encontrada</h1>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "center",
             "type_preset": "h3",
-            "font": "var(--font-primary--family)",
+            "font": "var(--font-heading--family)",
             "font_size": "",
             "line_height": "normal",
             "letter_spacing": "normal",
@@ -37,18 +41,18 @@
           },
           "blocks": {}
         },
-        "text_Ua9XAW": {
+        "text_desc": {
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<p>The link may be incorrect, or the page has been removed. </p>",
+            "text": "<p>El enlace puede ser incorrecto o la página ha sido eliminada.</p>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "center",
             "type_preset": "rte",
-            "font": "var(--font-primary--family)",
+            "font": "var(--font-body--family)",
             "font_size": "",
-            "line_height": "normal",
+            "line_height": "relaxed",
             "letter_spacing": "normal",
             "case": "none",
             "wrap": "pretty",
@@ -63,11 +67,11 @@
           },
           "blocks": {}
         },
-        "button_PAQMwR": {
+        "button_shop": {
           "type": "button",
           "name": "t:names.button",
           "settings": {
-            "label": "Continue shopping",
+            "label": "Seguir comprando",
             "link": "shopify://collections/all",
             "open_in_new_tab": false,
             "style_class": "button",
@@ -80,9 +84,9 @@
         }
       },
       "block_order": [
-        "text_GqmVFf",
-        "text_Ua9XAW",
-        "button_PAQMwR"
+        "text_heading",
+        "text_desc",
+        "button_shop"
       ],
       "settings": {
         "content_direction": "column",
@@ -91,12 +95,12 @@
         "horizontal_alignment_flex_direction_column": "center",
         "vertical_alignment_flex_direction_column": "center",
         "gap": 20,
-        "color_scheme": "",
+        "color_scheme": "scheme-3",
         "padding-block-start": 100,
         "padding-block-end": 100
       }
     },
-    "product_list_iA96Tq": {
+    "discovery_products": {
       "type": "product-list",
       "blocks": {
         "static-header": {
@@ -108,7 +112,7 @@
             "horizontal_alignment": "flex-start",
             "vertical_alignment": "center",
             "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
+            "horizontal_alignment_flex_direction_column": "center",
             "vertical_alignment_flex_direction_column": "center",
             "gap": 12,
             "width": "fill",
@@ -132,16 +136,16 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "text_WJEa9Q": {
+            "text_discover": {
               "type": "text",
               "name": "t:names.text",
               "settings": {
-                "text": "<p>Discover something new</p>",
+                "text": "<p>Descubre algo nuevo</p>",
                 "width": "fit-content",
                 "max_width": "normal",
-                "alignment": "left",
+                "alignment": "center",
                 "type_preset": "h4",
-                "font": "var(--font-primary--family)",
+                "font": "var(--font-heading--family)",
                 "font_size": "",
                 "line_height": "normal",
                 "letter_spacing": "normal",
@@ -160,7 +164,7 @@
             }
           },
           "block_order": [
-            "text_WJEa9Q"
+            "text_discover"
           ]
         },
         "static-product-card": {
@@ -181,7 +185,7 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "product_card_gallery_wxYqE3": {
+            "gallery": {
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
@@ -197,7 +201,7 @@
               },
               "blocks": {}
             },
-            "product_title_83YMDL": {
+            "title": {
               "type": "product-title",
               "name": "t:names.product_title",
               "settings": {
@@ -222,7 +226,7 @@
               },
               "blocks": {}
             },
-            "price_A6DYPt": {
+            "price": {
               "type": "price",
               "name": "t:names.product_price",
               "settings": {
@@ -247,17 +251,17 @@
             }
           },
           "block_order": [
-            "product_card_gallery_wxYqE3",
-            "product_title_83YMDL",
-            "price_A6DYPt"
+            "gallery",
+            "title",
+            "price"
           ]
         }
       },
-      "name": "Featured collection",
+      "name": "Descubre algo nuevo",
       "settings": {
         "collection": "all",
         "layout_type": "grid",
-        "carousel_on_mobile": false,
+        "carousel_on_mobile": true,
         "max_products": 4,
         "columns": 4,
         "mobile_columns": "2",
@@ -270,13 +274,13 @@
         "horizontal_alignment": "center",
         "gap": 36,
         "color_scheme": "scheme-1",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "padding-block-start": 56,
+        "padding-block-end": 56
       }
     }
   },
   "order": [
     "main",
-    "product_list_iA96Tq"
+    "discovery_products"
   ]
 }

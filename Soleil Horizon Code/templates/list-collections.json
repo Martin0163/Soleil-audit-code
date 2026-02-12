@@ -5,13 +5,17 @@
  * This file may be updated by the Shopify admin theme editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
+ *
+ * INTEGRATION NOTE (2026-02-12): Collection list styled with
+ * Código Soleil palette. Cream background with plum accents.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
-    "collection_list_Wfgh3m": {
+    "collection_list": {
       "type": "main-collection-list",
       "blocks": {
-        "group_4FtiAg": {
+        "header_group": {
           "type": "group",
           "name": "t:names.header",
           "settings": {
@@ -21,12 +25,12 @@
             "horizontal_alignment": "flex-start",
             "vertical_alignment": "center",
             "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
+            "horizontal_alignment_flex_direction_column": "center",
             "vertical_alignment_flex_direction_column": "center",
             "gap": 12,
-            "width": "fit-content",
+            "width": "fill",
             "custom_width": 100,
-            "width_mobile": "fit-content",
+            "width_mobile": "fill",
             "custom_width_mobile": 100,
             "height": "fit",
             "custom_height": 100,
@@ -49,16 +53,16 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "text_fRMQMR": {
+            "text_title": {
               "type": "text",
               "name": "t:names.text",
               "settings": {
-                "text": "<h1>Collections</h1>",
+                "text": "<h1>Nuestras colecciones</h1>",
                 "width": "100%",
                 "max_width": "normal",
-                "alignment": "left",
+                "alignment": "center",
                 "type_preset": "h2",
-                "font": "var(--font-primary--family)",
+                "font": "var(--font-heading--family)",
                 "font_size": "",
                 "line_height": "normal",
                 "letter_spacing": "normal",
@@ -69,7 +73,33 @@
                 "background_color": "#00000026",
                 "corner_radius": 0,
                 "padding-block-start": 0,
-                "padding-block-end": 16,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_desc": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<p>Explora nuestra selección curada de productos de belleza premium</p>",
+                "width": "100%",
+                "max_width": "narrow",
+                "alignment": "center",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "",
+                "line_height": "relaxed",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
               },
@@ -77,7 +107,8 @@
             }
           },
           "block_order": [
-            "text_fRMQMR"
+            "text_title",
+            "text_desc"
           ]
         },
         "static-collection-card": {
@@ -97,15 +128,15 @@
             "border_radius": 0
           },
           "blocks": {
-            "collection_title_7YgBPU": {
+            "collection_title": {
               "type": "collection-title",
               "name": "t:names.collection_title",
               "settings": {
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
+                "type_preset": "h5",
+                "font": "var(--font-heading--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
@@ -141,12 +172,12 @@
             }
           },
           "block_order": [
-            "collection_title_7YgBPU"
+            "collection_title"
           ]
         }
       },
       "block_order": [
-        "group_4FtiAg"
+        "header_group"
       ],
       "name": "Collection list",
       "settings": {
@@ -157,18 +188,18 @@
         "columns_gap": 12,
         "bento_gap": 8,
         "rows_gap": 24,
-        "max_collections": 4,
+        "max_collections": 6,
         "icons_style": "arrow",
         "icons_shape": "none",
         "section_width": "page-width",
         "gap": 12,
-        "color_scheme": "",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "color_scheme": "scheme-2",
+        "padding-block-start": 56,
+        "padding-block-end": 56
       }
     }
   },
   "order": [
-    "collection_list_Wfgh3m"
+    "collection_list"
   ]
 }
